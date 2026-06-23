@@ -13,6 +13,8 @@ import SatelliteDetails from '@/modules/satellites/components/SatelliteDetails';
 import OrbitPanel from '@/modules/orbits/components/OrbitPanel';
 import OrbitLegend from '@/modules/orbits/components/OrbitLegend';
 import OrbitTimeline from '@/modules/orbits/components/OrbitTimeline';
+import { ISSPanel } from '@/modules/iss/components/ISSPanel';
+import { ISSStatusBar } from '@/modules/iss/components/ISSStatusBar';
 
 // Dynamically import the Cesium globe to avoid SSR issues
 const CesiumGlobe = dynamic(() => import('@/modules/globe/CesiumGlobe'), {
@@ -32,6 +34,10 @@ function AppOverlay() {
 
       {/* Hero overlay fades out when an active location exists */}
       {!activeLocation && <HeroSection />}
+      
+      {/* Phase 3B: ISS Components */}
+      <ISSPanel />
+      <ISSStatusBar />
 
       {/* Main UI Layer (Always active, top level) */}
       <div className="absolute inset-0 z-20 pointer-events-none flex flex-col p-4 md:p-8">
@@ -64,6 +70,7 @@ function AppOverlay() {
             <SatellitePanel />
           </div>
         </div>
+
 
         {/* Phase 3A: Orbit Timeline HUD (bottom center) */}
         <OrbitTimeline />

@@ -10,6 +10,8 @@ import { DayNightLayer } from './layers/DayNightLayer';
 import { SatelliteLayer } from './layers/SatelliteLayer';
 import { LocationLayer } from './layers/LocationLayer';
 import { OrbitLayer } from './layers/OrbitLayer';
+import { ISSLayer } from '../iss/layers/ISSLayer';
+import { ISSService } from '../iss/services/ISSService';
 
 export default function CesiumGlobe() {
   const cesiumContainer = useRef<HTMLDivElement>(null);
@@ -58,16 +60,23 @@ export default function CesiumGlobe() {
     const satelliteLayer = new SatelliteLayer();
     const locationLayer = new LocationLayer();
     const orbitLayer = new OrbitLayer();
+    const issLayer = new ISSLayer();
 
     LayerManager.addLayer(dayNightLayer);
     LayerManager.addLayer(satelliteLayer);
     LayerManager.addLayer(locationLayer);
     LayerManager.addLayer(orbitLayer);
+    LayerManager.addLayer(issLayer);
 
     dayNightLayer.show();
     satelliteLayer.show();
     locationLayer.show();
     orbitLayer.show();
+    issLayer.show();
+    
+    // Boot up the ISS Telemetry Service
+    ISSService.initialize();
+
 
     // Hook Cesium update ticks to the LayerManager
     const removePreUpdateEvent = viewer.scene.preUpdate.addEventListener((scene, time) => {

@@ -89,3 +89,45 @@ PHASE 1 COMPLETE.
 - `SatellitePanel`: A right-aligned floating panel containing category selectors and active signal counts.
 - `SatelliteDetails`: An animated info card displaying real-time metrics (Altitude, Velocity, Inclination, Lat/Lon) when a satellite is selected.
 - Successfully orchestrated all components alongside the Phase 2A Location UI without overlapping layers.
+
+[2026-06-23] PHASE 3A: ORBIT VISUALIZATION ENGINE
+=================================================
+
+16. Orbit Domain & Services
+- Implemented `OrbitVisualizationService`, `TrajectoryService`, and `GroundTrackService` to handle SGP4 projection and path generation.
+- Established `useOrbitStore` to manage selected satellites for active visualization.
+
+17. Globe Integration
+- Implemented `OrbitLayer` to render future/past trajectories, ground tracks, and active footprints via `GlobeService` CustomDataSources.
+
+18. User Interface Components
+- Created `OrbitPanel`, `OrbitLegend`, and `OrbitTimeline` to interact with past/future trajectory predictions.
+
+[2026-06-23] BUILD VERIFICATION
+===============================
+- TypeScript compilation and type-checking passed (0 errors).
+- Project successfully verified as structurally sound and runtime-ready.
+- Architecture and module inventory mapped to PROJECT_STATE.md.
+
+[2026-06-23] PHASE 3B: ISS SPECIALIZED MODULE
+=============================================
+
+19. ISS Domain & Services
+- Created `ISSObject` extending `SatelliteObject` with `crewCount`.
+- Built `ISSTelemetryService` to consume `CelesTrakProvider` specifically for NORAD ID 25544.
+- Implemented `ISSService` to establish a 1-second propagation loop for smooth real-time coordinates.
+- Setup `useISSStore` to manage ISS state and tracking status.
+
+20. ISS Layer Integration
+- Created `ISSLayer` using premium marker styling for the ISS.
+- Hooked `ISSLayer` clicks directly to `CameraService.trackEntity()`.
+- Added `ISSLayer` to the `LayerRegistry` and initialized it in `CesiumGlobe`.
+- Automatically passed the `ISSObject` to `useSatelliteStore.selectedSatellite` when tracked, natively triggering the `OrbitVisualizationService` and `OrbitLayer` to display ground tracks and future trajectories without duplicating orbit logic.
+
+21. User Interface Components
+- Created `ISSPanel` with a "Locate ISS" action that triggers camera tracking.
+- Created `ISSDetails` to display real-time telemetry (Altitude, Velocity, Inclination).
+- Created `ISSStatusBar` for compact, mobile-friendly HUD overlays.
+- Successfully orchestrated all components within `AppOverlay` in `page.tsx`.
+
+

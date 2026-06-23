@@ -6,6 +6,7 @@ import { OrbitLayer } from './layers/OrbitLayer';
 import { PlanetLayer } from './layers/PlanetLayer';
 import { MoonLayer } from './layers/MoonLayer';
 import { HeatmapLayer } from './layers/HeatmapLayer';
+import { ISSLayer } from '../iss/layers/ISSLayer';
 
 /**
  * A central registry of all available layer classes.
@@ -19,4 +20,5 @@ export const LayerRegistry: Record<string, new () => ILayer> = {
   'planets': PlanetLayer,
   'moon': MoonLayer,
   'heatmap': HeatmapLayer,
+  'iss': ISSLayer,
 };
