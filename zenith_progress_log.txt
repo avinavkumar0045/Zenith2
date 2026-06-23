@@ -1,0 +1,91 @@
+PROJECT ZENITH - PROGRESS LOG
+=============================
+
+1. Project Initialization
+- Initialized Next.js project with App Router, TypeScript, Tailwind CSS.
+- Added necessary dependencies: Cesium, Zustand, Framer Motion, React Hook Form, Zod, clsx, tailwind-merge, lucide-react.
+
+2. Folder Structure Generated
+- Created scalable structure inside `src/`: components, modules, services, hooks, store, types, utils.
+- Created placeholder module folders (globe, satellites, iss, planets, moon, weather, news, reports, sharing).
+- Created `docs/` folder for architecture documentation.
+
+3. Architecture Documentation Completed
+- Wrote `project_conventions.md`, `coding_standards.md`, `scalability_guidelines.md`, and diagrams for component hierarchy and data flow in the `docs/` folder.
+
+4. UI & Core Foundations Completed
+- Configured Tailwind CSS v4 globally with custom color tokens (Space aesthetic).
+- Set up Zustand state store (`useAppStore.ts`).
+- Copied Cesium static assets to `public/cesium`.
+
+5. Hero Section & Globe Completed
+- Built `HeroSection.tsx` with Framer Motion for elegant fade-in sequence.
+- Built `CesiumGlobe.tsx` configured with day/night rendering and base layers.
+- Wired together in `src/app/page.tsx` with responsive layout considerations.
+
+PHASE 1 COMPLETE.
+
+[2026-06-23] GLOBE ARCHITECTURE REFINEMENT
+==========================================
+
+6. Abstracted Cesium Implementation
+- Created `GlobeService` singleton to manage the Cesium Viewer instance away from UI components.
+- Created `CameraService` to abstract camera controls (`focusLocation`, `trackEntity`).
+- Created `MarkerService` to handle generic POI marker creation.
+
+7. Layer Management System
+- Implemented `ILayer` interface and `BaseLayer` abstract class.
+- Created `LayerManager` singleton to orchestrate lifecycle events (init, show, hide, update, destroy).
+- Implemented `LayerRegistry` to map layer string keys to class constructors.
+- Added specific layers: `DayNightLayer`, `SatelliteLayer`, `LocationLayer`, `OrbitLayer`, `PlanetLayer`, `MoonLayer`, `HeatmapLayer`.
+- Refactored `CesiumGlobe.tsx` to act purely as a host component initializing the `GlobeService` and `LayerManager`.
+
+[2026-06-23] PHASE 2A: LOCATION INTELLIGENCE ENGINE
+===================================================
+
+8. Core Location Subsystem
+- Designed `LocationIntelligenceObject` as the single canonical type for location data.
+- Built `useLocationStore` in Zustand to manage `activeLocation` and persist `recentLocations` (max 10) to localStorage.
+- Established a global `EventBus` using `mitt` for decoupled module communication.
+
+9. Providers & Services
+- Integrated OpenStreetMap's Nominatim API via `NominatimProvider` and abstracted it through `GeocodingService`.
+- Integrated `suncalc` via `DayNightService` to accurately calculate Sunrise, Sunset, Twilight, and Day/Night status based on coordinates and current time.
+- Built the `LocationService` orchestrator that ties coordinates to geocoding, day/night parsing, and automatically dispatches to the Store and Event Bus.
+- Added `requestBrowserLocation` capabilities with `sessionStorage` guard for first-time visits.
+
+10. Globe Interaction & Camera Sync
+- Wired Cesium's `ScreenSpaceEventHandler` in `GlobeService` to emit raw clicks.
+- Intercepted click events in `LocationService` to reverse-geocode and trigger system updates.
+- Refactored `LocationLayer` to purely listen to `locationChanged` events, draw markers via `MarkerService`, and automatically pilot the `CameraService`.
+
+11. User Interface Components
+- `LocationSearch`: Real-time Nominatim search with a beautiful frosted glass dropdown.
+- `LocationStatus`: Elegant pill-shaped top-bar displaying Name, Day State, and Local Time.
+- `LocationCard`: Extensible bottom-left panel showcasing detailed geospatial insights (Lat/Lon, Sunrise, Sunset).
+- `RecentLocations`: Quick switcher for previous places.
+- Synced state with URL query parameters `?lat=xx&lon=yy` allowing instant deep-linking.
+
+[2026-06-23] PHASE 2B: SATELLITE INFRASTRUCTURE LAYER
+=====================================================
+
+12. Satellite Domain & Providers
+- Installed `satellite.js` for native SGP4 orbital propagation.
+- Defined the canonical `SatelliteObject` model.
+- Created `SatelliteProvider` abstraction and fully implemented `CelesTrakProvider` to fetch live TLE data.
+
+13. Services & State Management
+- Built `OrbitService` to parse TLEs, extract NORAD IDs, and convert raw ECI coordinates into Geodetic representations (Lat/Lon/Alt).
+- Created `SatelliteService` as the orchestrator. It listens to the `EventBus` for location changes and fetches standard satellite categories on load.
+- Implemented `useSatelliteStore` (Zustand) to manage active satellites, loading states, and the currently tracked satellite.
+- Established an internal polling interval (every 10s) to continuously propagate and update orbit states.
+
+14. Globe Integration
+- Added `createSatelliteMarker` to `MarkerService` to distinguish satellites structurally.
+- Refactored `SatelliteLayer` to observe the `useSatelliteStore` and automatically sync Cesium `CustomDataSource` entities.
+- Handled click-to-pick logic directly inside `SatelliteLayer`, bridging back to `SatelliteStore` and engaging the `CameraService` tracking.
+
+15. User Interface Components
+- `SatellitePanel`: A right-aligned floating panel containing category selectors and active signal counts.
+- `SatelliteDetails`: An animated info card displaying real-time metrics (Altitude, Velocity, Inclination, Lat/Lon) when a satellite is selected.
+- Successfully orchestrated all components alongside the Phase 2A Location UI without overlapping layers.

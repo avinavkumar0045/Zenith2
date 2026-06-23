@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --color-space-900: #040814;
+  --color-space-800: #0a1128;
+  --color-space-700: #121f40;
+  --color-accent-blue: #3b82f6;
+  --color-accent-glow: rgba(59, 130, 246, 0.5);
+  
+  --font-sans: var(--font-inter);
+}
+
+:root {
+  --background: #000000;
+  --foreground: #ffffff;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-sans), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Cesium specific overrides to ensure it fills the background seamlessly */
+#cesiumContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.cesium-viewer {
+  width: 100%;
+  height: 100%;
+}
+
+.cesium-widget-credits {
+  display: none !important; /* Temporarily hide for cleaner UI */
+}
+
+/* Base Utility Classes */
+.glass-panel {
+  background: rgba(10, 17, 40, 0.4);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
