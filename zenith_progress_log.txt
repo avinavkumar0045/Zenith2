@@ -130,4 +130,43 @@ PHASE 1 COMPLETE.
 - Created `ISSStatusBar` for compact, mobile-friendly HUD overlays.
 - Successfully orchestrated all components within `AppOverlay` in `page.tsx`.
 
+[2026-06-23] PHASE 4: PASS PREDICTION ENGINE
+============================================
+
+22. Observer & Visibility Engine
+- Built `ObserverService` to abstract `LocationIntelligenceObject` into math-ready Observer Geodetic coordinates.
+- Built `VisibilityService` to determine simplified day/night pass visibility based on max elevation thresholds and assign a qualitative `PassQuality` score (Excellent, Good, Average, Poor).
+
+23. Core Pass Prediction Algorithm
+- Implemented `PassPredictionService` using `satellite.js` look angles (`ecfToLookAngle`) across a 24-hour iteration window with 1-minute steps.
+- Set up decoupled event listeners for `eventBus.on('locationChanged')` and `useSatelliteStore` selection changes.
+- Avoided all coupling to Cesium logic. Data flows strictly from mathematical models into the `usePassStore`.
+
+24. Pass Interface Components
+- Created `usePassPredictions` hook to seamlessly bridge store data.
+- Built `UpcomingPasses` to dynamically map a chronological list of predicted windows with elevation metrics.
+- Developed `PassDetails` for granular readouts (Rise, Peak, Set, Duration).
+- Built an elegant horizontal `PassTimeline` visualization plotting multiple future events.
+- Orchestrated the final module inside `PassPanel` and successfully integrated it into the right-side overlay of `page.tsx`.
+
+[2026-06-23] PHASE 5: CELESTIAL INTELLIGENCE REPORT ENGINE
+==========================================================
+
+25. Intelligence Engine Architecture
+- Designed `CelestialReportObject` to aggregate raw pass and location data into high-level intelligence.
+- Created `ScoringService` to evaluate conditions (Day/Night, Max Elevation, Quantity of Passes) and compute a definitive `ObservationScore` (0-10).
+- Created `ObservationService` to formulate plain-language recommendations based on pass timings and conditions.
+
+26. Integration & Real-time Flow
+- Implemented `ReportService` listening natively to `locationChanged`, and Zustand subscriptions on `usePassStore` and `useSatelliteStore`.
+- Achieved fully autonomous background evaluation: updates in location or selected satellites instantly trickle up to regenerate the `CelestialReportObject` with zero user prompting.
+
+27. User Interface Implementation
+- Built the `ObservationScore` component using dynamic SVG circle charts to visually plot the 0-10 score.
+- Built the `ObservationCard` modular layout for rapid scanning of metrics like "Best Elevation".
+- Built the `RecommendationPanel` to display natural language AI-style outputs.
+- Assembled the `CelestialReport` and anchored it smoothly below the `LocationCard` in the desktop `AppOverlay` layout.
+
+
+
 
