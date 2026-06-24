@@ -249,3 +249,13 @@ PHASE 1 COMPLETE.
 - Globe Integration: Configured PlanetGroundLayer directly onto Cesium LayerManager with uniquely mapped planetary color entities.
 - Report Integration: Extended ReportService dynamically injecting individual planet visibility (e.g. "Venus is currently visible").
 - Validated performance impacts identically mirroring Phase 6B bounds (0 loop overhead, 0 typescript errors). Verified location math seamlessly across New Delhi, London, Tokyo, Sydney, and New York.
+
+[2026-06-24] PHASE 7A: UNIFIED SKY INTELLIGENCE ENGINE
+======================================================
+- Consolidated Phase 6 architecture: Replaced independent ReportService with highly-integrated SkyIntelligenceService acting as an event-driven master aggregator.
+- UnifiedSkyReport: Designed a unified domain model merging location state, dynamic ISS pass times, Planet visibility states, Moon phases, and Satellite tracking logic.
+- Unified Observation Engine: Created SkyObservationScoreEngine combining Phase 5.5 + Phase 6 logic into a single 10-point astronomy score incorporating daylight penalties, planet strength, and satellite proximity.
+- Unified Recommendation Engine: Created SkyRecommendationEngine to assign 'Best Observation Target' dynamically picking between ISS passes, Planet scores, and the Moon. Also dynamically synthesizing real-time human-readable recommendations and warnings.
+- Layout Compliance: Rebuilt CelestialReport.tsx mapping perfectly to the UnifiedSkyReport format. Kept exact Phase 6C dimensions, grid structure, aesthetic, and fixed screen position.
+- Performance: Guaranteed zero polling and zero setInterval updates. The new Engine only re-fires selectively when underlying Zustand stores trigger a relevant difference.
+- Verified validation completely clean (`tsc --noEmit` exit 0).
