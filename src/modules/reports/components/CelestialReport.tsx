@@ -1,12 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSkyIntelligenceStore } from '../store/useSkyIntelligenceStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Moon, Sun, CloudLightning, Globe2, AlertTriangle, CheckCircle2, Navigation } from 'lucide-react';
+import { Sparkles, Moon, Sun, CloudLightning, Globe2, AlertTriangle, CheckCircle2, Navigation, Activity, ChevronDown, ChevronUp } from 'lucide-react';
 import { useLocationStore } from '../../location/store/useLocationStore';
+import { useWeatherStore } from '../../weather/store/useWeatherStore';
+import { CloudRain } from 'lucide-react';
 
 export function CelestialReport() {
   const report = useSkyIntelligenceStore(state => state.report);
   const activeLocation = useLocationStore(state => state.activeLocation);
+  const { weather } = useWeatherStore();
+  const [isExpanded, setIsExpanded] = useState(true);
 
   if (!activeLocation) return null;
 
@@ -18,12 +22,15 @@ export function CelestialReport() {
         exit={{ opacity: 0, x: 20 }}
         className="w-80 bg-black/60 border border-white/10 backdrop-blur-xl rounded-2xl p-5 shadow-2xl pointer-events-auto flex flex-col max-h-[85vh] overflow-y-auto custom-scrollbar"
       >
-        <div className="flex items-center space-x-2 mb-4 border-b border-white/10 pb-3">
-          <Sparkles className="w-5 h-5 text-purple-400" />
-          <h2 className="text-lg font-bold text-white tracking-wide">Unified Sky Report</h2>
+        <div className="flex items-center justify-between mb-4 border-b border-white/10 pb-3 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
+          <div className="flex items-center space-x-2">
+            <Sparkles className="w-5 h-5 text-purple-400" />
+            <h2 className="text-lg font-bold text-white tracking-wide">Unified Sky Report</h2>
+          </div>
+          {isExpanded ? <ChevronDown className="w-4 h-4 text-gray-400" /> : <ChevronUp className="w-4 h-4 text-gray-400" />}
         </div>
 
-        {!report ? (
+        {isExpanded && (!report ? (
           <div className="flex flex-col items-center justify-center py-10 text-gray-500">
             <CloudLightning className="w-8 h-8 mb-2 opacity-50" />
             <p className="text-sm">Calculating intelligence...</p>
@@ -47,6 +54,23 @@ export function CelestialReport() {
                 </span>
                 <p className="text-white font-bold text-lg">{report.bestObservationTarget.name}</p>
                 <p className="text-xs text-gray-400 mt-1 leading-tight">{report.bestObservationTarget.reason}</p>
+              </div>
+            )}
+
+            {/* Astronomical Weather Conditions (Phase 7C) */}
+            {weather && (
+              <div className="bg-blue-900/10 border border-blue-500/20 rounded-lg p-2 flex justify-between items-center">
+                <div className="flex items-center space-x-2">
+                  <CloudRain className="w-4 h-4 text-blue-400" />
+                  <div>
+                    <span className="text-[9px] text-gray-400 uppercase block leading-none">Conditions</span>
+                    <span className="text-xs text-blue-200 font-medium leading-none mt-0.5 inline-block">{weather.weatherCondition}</span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-[9px] text-gray-400 uppercase block leading-none">Cloud / Vis</span>
+                  <span className="text-xs text-gray-300 leading-none mt-0.5 inline-block">{weather.cloudCover}% / {weather.visibilityKm}km</span>
+                </div>
               </div>
             )}
 
@@ -176,8 +200,8 @@ export function CelestialReport() {
             )}
 
           </div>
-        )}
+        ))}
       </motion.div>
     </AnimatePresence>
   );
-};
+}

@@ -2,6 +2,7 @@ import { useLocationStore } from '../../location/store/useLocationStore';
 import { useMoonStore } from '../../moon/store/useMoonStore';
 import { usePlanetStore } from '../../planets/store/usePlanetStore';
 import { usePassStore } from '../../pass-predictions/store/usePassStore';
+import { useWeatherStore } from '../../weather/store/useWeatherStore';
 import { useObservationPlanningStore } from '../store/useObservationPlanningStore';
 
 import { ObservationWindowEngine } from './ObservationWindowEngine';
@@ -17,6 +18,7 @@ class ObservationPlanningServiceClass {
   private unsubscribeMoon: (() => void) | null = null;
   private unsubscribePlanet: (() => void) | null = null;
   private unsubscribePass: (() => void) | null = null;
+  private unsubscribeWeather: (() => void) | null = null;
 
   public initialize() {
     this.unsubscribeLocation = useLocationStore.subscribe((state, prevState) => {
@@ -43,6 +45,12 @@ class ObservationPlanningServiceClass {
       }
     });
 
+    this.unsubscribeWeather = useWeatherStore.subscribe((state, prevState) => {
+      if (state.weather?.updatedAt !== prevState.weather?.updatedAt) {
+        this.generatePlan();
+      }
+    });
+
     // Initial generate
     this.generatePlan();
   }
@@ -58,6 +66,9 @@ class ObservationPlanningServiceClass {
     const { moonData } = useMoonStore.getState();
     const { planets } = usePlanetStore.getState();
     const { upcomingPasses } = usePassStore.getState();
+    const { weather } = useWeatherStore.getState();
+
+    const weatherMult = weather?.scoreMultiplier ?? 1.0;
 
     const targets: ObservationTarget[] = [];
 
@@ -70,7 +81,7 @@ class ObservationPlanningServiceClass {
         type: 'Moon',
         window,
         quality: window ? ObservationQualityEngine.determineQuality(window.peakAltitude, isDaylight, moonData.isVisible) : 'Hidden',
-        score: moonData.observationScore
+        score: moonData.observationScore * weatherMult
       });
     }
 
@@ -84,7 +95,7 @@ class ObservationPlanningServiceClass {
           type: 'Planet',
           window,
           quality: window ? ObservationQualityEngine.determineQuality(window.peakAltitude, isDaylight, p.isAboveHorizon) : 'Hidden',
-          score: p.observationScore
+          score: p.observationScore * weatherMult
         });
       });
     }
@@ -101,7 +112,7 @@ class ObservationPlanningServiceClass {
             type: isISS ? 'ISS' : 'Satellite',
             window,
             quality: ObservationQualityEngine.determineQuality(window.peakAltitude, isDaylight, true),
-            score: isISS ? 10 : 6
+            score: (isISS ? 10 : 6) * weatherMult
           });
         }
       });
@@ -129,6 +140,7 @@ class ObservationPlanningServiceClass {
     if (this.unsubscribeMoon) this.unsubscribeMoon();
     if (this.unsubscribePlanet) this.unsubscribePlanet();
     if (this.unsubscribePass) this.unsubscribePass();
+    if (this.unsubscribeWeather) this.unsubscribeWeather();
   }
 }
 

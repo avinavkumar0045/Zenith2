@@ -23,6 +23,7 @@ PROJECT ZENITH - PROGRESS LOG
 - Built `CesiumGlobe.tsx` configured with day/night rendering and base layers.
 - Wired together in `src/app/page.tsx` with responsive layout considerations.
 
+
 PHASE 1 COMPLETE.
 
 [2026-06-23] GLOBE ARCHITECTURE REFINEMENT
@@ -283,3 +284,31 @@ PHASE 1 COMPLETE.
 - UI Changes: Retrofitted `CelestialReport.tsx` by seamlessly appending compact, styled, chronological agenda elements into the existing report card footprint without altering screen positioning, Z-indexes, or adding pop-ups.
 - Validation Results: `tsc --noEmit` exits cleanly (0 errors). The logic fully accommodates New York daytime constraints vs Sydney nighttime passes simultaneously.
 - Performance Notes: Implemented purely event-driven using Zustand subscriptions (`useObservationPlanningStore`). No polling or Cesium JS loops added. Meets Phase 5.5 performance standards exactly.
+
+[2026-06-24 19:33:00] PHASE 7C: ASTRONOMICAL WEATHER & OBSERVATION CONDITIONS ENGINE
+======================================================
+- Files Created: 
+  - src/modules/weather/types/weather.types.ts
+  - src/modules/weather/store/useWeatherStore.ts
+  - src/modules/weather/providers/IWeatherProvider.ts
+  - src/modules/weather/providers/OpenMeteoProvider.ts
+  - src/modules/weather/services/ObservationConditionsEngine.ts
+  - src/modules/weather/services/WeatherService.ts
+- Files Modified: 
+  - src/modules/reports/services/SkyObservationScoreEngine.ts
+  - src/modules/reports/services/SkyRecommendationEngine.ts
+  - src/modules/reports/services/ObservationPlanningService.ts
+  - src/modules/reports/components/CelestialReport.tsx
+  - src/app/page.tsx
+- Provider Selected: Open-Meteo. Chosen for its free tier, zero API key requirement, global coverage, and explicit endpoints for cloud cover, visibility, and precipitation.
+- Scoring Model: 
+  - Implemented `ObservationConditionsEngine` to generate an astronomy-specific score multiplier.
+  - Precipitation explicitly results in a 0.0x multiplier.
+  - Cloud cover heavily scales multipliers down (e.g. >90% drops the multiplier by 90%).
+  - Visibility impacts the multiplier when under 10km (fog/haze).
+- Integrations Completed:
+  - SkyObservationScoreEngine now natively incorporates the weather multiplier, slashing scores appropriately when skies are poor.
+  - SkyRecommendationEngine now dynamically generates weather-aware recommendations and warnings.
+  - ObservationPlanningService penalizes the ranking scores dynamically for celestial bodies caught behind weather fronts.
+  - CelestialReport.tsx incorporates a compact 'Conditions' UI block displaying live Cloud/Vis percentiles mapping exactly to the fixed UX rules established in Phase 6.
+- Validation Summary: The system cleanly fetches data via `WeatherService` specifically bound to the `useLocationStore` subscription. Zero `setInterval` loops or global render bottlenecks detected. TypeScript checks returned 0 Errors.

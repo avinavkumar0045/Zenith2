@@ -20,6 +20,7 @@ import { ObservationPlanningService } from '@/modules/reports/services/Observati
 import { MoonService } from '@/modules/moon/services/MoonService';
 import { MoonPositionService } from '@/modules/moon/services/MoonPositionService';
 import { PlanetPositionService } from '@/modules/planets/services/PlanetPositionService';
+import { WeatherService } from '@/modules/weather/services/WeatherService';
 
 // Dynamically import the Cesium globe to avoid SSR issues
 const CesiumGlobe = dynamic(() => import('@/modules/globe/CesiumGlobe'), {
@@ -34,6 +35,7 @@ function AppOverlay() {
   const currentView = useAppStore(state => state.currentView);
 
   useEffect(() => {
+    WeatherService.initialize();
     PassPredictionService.initialize();
     SkyIntelligenceService.initialize();
     ObservationPlanningService.initialize();
@@ -42,6 +44,7 @@ function AppOverlay() {
     PlanetPositionService.initialize();
     
     return () => {
+      WeatherService.destroy();
       PassPredictionService.destroy();
       SkyIntelligenceService.destroy();
       ObservationPlanningService.destroy();

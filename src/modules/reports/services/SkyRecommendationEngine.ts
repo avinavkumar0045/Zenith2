@@ -4,6 +4,7 @@ import { usePlanetStore } from '../../planets/store/usePlanetStore';
 import { usePassStore } from '../../pass-predictions/store/usePassStore';
 import { useISSStore } from '../../iss/store/useISSStore';
 import { useSatelliteStore } from '../../satellites/store/useSatelliteStore';
+import { useWeatherStore } from '../../weather/store/useWeatherStore';
 import * as SunCalc from 'suncalc';
 
 export class SkyRecommendationEngineClass {
@@ -53,6 +54,7 @@ export class SkyRecommendationEngineClass {
     const { planets } = usePlanetStore.getState();
     const { upcomingPasses } = usePassStore.getState();
     const { moonData } = useMoonStore.getState();
+    const { weather } = useWeatherStore.getState();
     const bestTarget = this.getBestTarget();
 
     if (!activeLocation) return recs;
@@ -60,6 +62,13 @@ export class SkyRecommendationEngineClass {
     const sunPos = SunCalc.getPosition(new Date(), activeLocation.latitude, activeLocation.longitude);
     const sunAlt = sunPos.altitude * 180 / Math.PI;
     const dayState = sunAlt > 0 ? 'Day' : (sunAlt > -18 ? 'Twilight' : 'Night');
+
+    if (weather && weather.scoreMultiplier < 0.5) {
+      recs.push(`Observation conditions are currently ${weather.observationQuality.toLowerCase()}. Celestial visibility may be severely limited.`);
+      return recs; // Skip other recs if weather is terrible
+    } else if (weather && weather.scoreMultiplier > 0.8) {
+      recs.push("Excellent sky conditions tonight.");
+    }
 
     if (dayState === 'Day') {
       recs.push("Observation quality is reduced by daylight.");
@@ -69,7 +78,7 @@ export class SkyRecommendationEngineClass {
       if (bestTarget.name === 'ISS' || bestTarget.name.startsWith('Satellite')) {
         recs.push(`${bestTarget.name} visibility will be excellent shortly.`);
       } else {
-        recs.push(`${bestTarget.name} is currently the best planetary observation target.`);
+        recs.push(`${bestTarget.name} is the recommended observation target.`);
       }
     }
 
@@ -95,6 +104,7 @@ export class SkyRecommendationEngineClass {
     const { moonData } = useMoonStore.getState();
     const { activeLocation } = useLocationStore.getState();
     const { upcomingPasses } = usePassStore.getState();
+    const { weather } = useWeatherStore.getState();
 
     if (!activeLocation) return warnings;
 
@@ -103,6 +113,10 @@ export class SkyRecommendationEngineClass {
     const dayState = sunAlt > 0 ? 'Day' : (sunAlt > -18 ? 'Twilight' : 'Night');
 
     const visiblePlanets = Object.values(planets || {}).filter(p => p.isAboveHorizon);
+
+    if (weather && weather.scoreMultiplier < 0.3) {
+      warnings.push(`Observation quality severely reduced by ${weather.weatherCondition.toLowerCase()}.`);
+    }
 
     if (!moonData?.isVisible) {
       warnings.push("Moon is below the horizon.");

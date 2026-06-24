@@ -2,6 +2,7 @@ import { useLocationStore } from '../../location/store/useLocationStore';
 import { useMoonStore } from '../../moon/store/useMoonStore';
 import { usePlanetStore } from '../../planets/store/usePlanetStore';
 import { usePassStore } from '../../pass-predictions/store/usePassStore';
+import { useWeatherStore } from '../../weather/store/useWeatherStore';
 import * as SunCalc from 'suncalc';
 
 export class SkyObservationScoreEngineClass {
@@ -12,6 +13,7 @@ export class SkyObservationScoreEngineClass {
     const { moonData } = useMoonStore.getState();
     const { planets } = usePlanetStore.getState();
     const { upcomingPasses } = usePassStore.getState();
+    const { weather } = useWeatherStore.getState();
 
     if (!activeLocation) return 0;
 
@@ -54,6 +56,11 @@ export class SkyObservationScoreEngineClass {
       if (imminentPasses.length > 0) {
         score += 2; // Good satellite activity
       }
+    }
+
+    // Weather penalty
+    if (weather) {
+      score *= weather.scoreMultiplier;
     }
 
     return Math.min(10, Math.max(0, score));
