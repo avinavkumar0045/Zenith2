@@ -8,6 +8,8 @@ import { Radio, Navigation, Radar, Globe2, Newspaper, CloudLightning } from 'luc
 import clsx from 'clsx';
 import { useSatelliteStore } from '@/modules/satellites/store/useSatelliteStore';
 
+import { MoonPanel } from '@/modules/moon/components/MoonPanel';
+
 type Tab = 'satellites' | 'iss' | 'passes' | 'moon' | 'planets' | 'news' | 'weather';
 
 export default function ZenithControlCenter() {
@@ -18,8 +20,9 @@ export default function ZenithControlCenter() {
     { id: 'satellites', label: 'Satellites', icon: <Radio className="w-4 h-4" /> },
     { id: 'iss', label: 'ISS', icon: <Navigation className="w-4 h-4" /> },
     { id: 'passes', label: 'Passes', icon: <Radar className="w-4 h-4" />, disabled: !selectedSatellite },
+    // Moon Module
+    { id: 'moon', label: 'Moon', icon: <Globe2 className="w-4 h-4" /> },
     // Future scalability tabs
-    { id: 'moon', label: 'Moon', icon: <Globe2 className="w-4 h-4" />, disabled: true },
     { id: 'planets', label: 'Planets', icon: <Globe2 className="w-4 h-4" />, disabled: true },
     { id: 'news', label: 'News', icon: <Newspaper className="w-4 h-4" />, disabled: true },
     { id: 'weather', label: 'Space Wx', icon: <CloudLightning className="w-4 h-4" />, disabled: true },
@@ -55,7 +58,7 @@ export default function ZenithControlCenter() {
         {activeTab === 'satellites' && <SatellitePanel />}
         {activeTab === 'iss' && <ISSPanel />}
         {activeTab === 'passes' && <PassPanel />}
-        {activeTab === 'moon' && <div className="text-gray-400 text-sm text-center py-10">Moon Module coming soon</div>}
+        {activeTab === 'moon' && <MoonPanel />}
         {activeTab === 'planets' && <div className="text-gray-400 text-sm text-center py-10">Planet Module coming soon</div>}
         {activeTab === 'news' && <div className="text-gray-400 text-sm text-center py-10">News Module coming soon</div>}
         {activeTab === 'weather' && <div className="text-gray-400 text-sm text-center py-10">Space Weather Module coming soon</div>}

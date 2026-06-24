@@ -1,6 +1,7 @@
 import { useLocationStore } from '../../location/store/useLocationStore';
 import { usePassStore } from '../../pass-predictions/store/usePassStore';
 import { useSatelliteStore } from '../../satellites/store/useSatelliteStore';
+import { useMoonStore } from '../../moon/store/useMoonStore';
 import { useReportStore } from '../store/useReportStore';
 import { ScoringService } from './ScoringService';
 import { ObservationService } from './ObservationService';
@@ -10,6 +11,7 @@ import { CelestialReportObject } from '../types/report.types';
 class ReportServiceClass {
   private unsubscribePassStore: (() => void) | null = null;
   private unsubscribeSatStore: (() => void) | null = null;
+  private unsubscribeMoonStore: (() => void) | null = null;
 
   public initialize() {
     // 1. Listen to explicit location changes
@@ -29,6 +31,13 @@ class ReportServiceClass {
     // 3. Listen to satellite changes (for Overhead Count)
     this.unsubscribeSatStore = useSatelliteStore.subscribe((state, prevState) => {
       if (state.activeSatellites.length !== prevState.activeSatellites.length) {
+        this.generateReport();
+      }
+    });
+
+    // 4. Listen to moon changes
+    this.unsubscribeMoonStore = useMoonStore.subscribe((state, prevState) => {
+      if (state.lastUpdated !== prevState.lastUpdated && !state.loading) {
         this.generateReport();
       }
     });
@@ -64,6 +73,20 @@ class ReportServiceClass {
     const score = ScoringService.generateScore(dayState, upcomingPasses);
     const quality = ScoringService.getQualityLabel(score);
     const recommendations = ObservationService.generateRecommendations(upcomingPasses, dayState);
+
+    // Inject Moon Intelligence
+    const { moonData } = useMoonStore.getState();
+    if (moonData) {
+      if (moonData.isVisible) {
+        if (moonData.observationScore >= 8) {
+          recommendations.push(`Moon observation conditions are excellent (${moonData.phaseName}).`);
+        } else if (moonData.observationScore >= 5) {
+          recommendations.push(`Moon currently visible (${moonData.phaseName}).`);
+        }
+      } else {
+        recommendations.push("Moon currently below horizon.");
+      }
+    }
 
     const report: CelestialReportObject = {
       locationName,
