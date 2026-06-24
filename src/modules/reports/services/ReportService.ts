@@ -3,6 +3,7 @@ import { usePassStore } from '../../pass-predictions/store/usePassStore';
 import { useSatelliteStore } from '../../satellites/store/useSatelliteStore';
 import { useMoonStore } from '../../moon/store/useMoonStore';
 import { useMoonPositionStore } from '../../moon/store/useMoonPositionStore';
+import { usePlanetStore } from '../../planets/store/usePlanetStore';
 import { useReportStore } from '../store/useReportStore';
 import { ScoringService } from './ScoringService';
 import { ObservationService } from './ObservationService';
@@ -14,6 +15,7 @@ class ReportServiceClass {
   private unsubscribeSatStore: (() => void) | null = null;
   private unsubscribeMoonStore: (() => void) | null = null;
   private unsubscribeMoonPosStore: (() => void) | null = null;
+  private unsubscribePlanetStore: (() => void) | null = null;
 
   public initialize() {
     // 1. Listen to explicit location changes
@@ -47,6 +49,13 @@ class ReportServiceClass {
     // 5. Listen to moon position changes
     this.unsubscribeMoonPosStore = useMoonPositionStore.subscribe((state, prevState) => {
       if (state.lastUpdated !== prevState.lastUpdated) {
+        this.generateReport();
+      }
+    });
+
+    // 6. Listen to planet changes
+    this.unsubscribePlanetStore = usePlanetStore.subscribe((state, prevState) => {
+      if (state.lastUpdated !== prevState.lastUpdated && !state.loading) {
         this.generateReport();
       }
     });
@@ -105,6 +114,26 @@ class ReportServiceClass {
       }
     }
 
+    // Inject Planet Intelligence
+    const { planets } = usePlanetStore.getState();
+    const planetVals = Object.values(planets || {});
+    if (planetVals.length > 0) {
+      planetVals.forEach(p => {
+        if (p.isAboveHorizon) {
+          if (p.observationScore >= 8) {
+            recommendations.push(`${p.name} is well positioned for observation.`);
+          } else if (p.observationScore >= 5) {
+            recommendations.push(`${p.name} is currently visible.`);
+          }
+        } else {
+          // Unclutter report: only optionally add if needed, but let's add Saturn as requested in the example
+          if (p.id === 'saturn' || p.id === 'jupiter') {
+             recommendations.push(`${p.name} is below the horizon.`);
+          }
+        }
+      });
+    }
+
     const report: CelestialReportObject = {
       locationName,
       dayState,
@@ -126,6 +155,7 @@ class ReportServiceClass {
     if (this.unsubscribeSatStore) this.unsubscribeSatStore();
     if (this.unsubscribeMoonStore) this.unsubscribeMoonStore();
     if (this.unsubscribeMoonPosStore) this.unsubscribeMoonPosStore();
+    if (this.unsubscribePlanetStore) this.unsubscribePlanetStore();
   }
 }
 

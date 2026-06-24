@@ -18,6 +18,7 @@ import { CelestialReport } from '@/modules/reports/components/CelestialReport';
 import { ReportService } from '@/modules/reports/services/ReportService';
 import { MoonService } from '@/modules/moon/services/MoonService';
 import { MoonPositionService } from '@/modules/moon/services/MoonPositionService';
+import { PlanetPositionService } from '@/modules/planets/services/PlanetPositionService';
 
 // Dynamically import the Cesium globe to avoid SSR issues
 const CesiumGlobe = dynamic(() => import('@/modules/globe/CesiumGlobe'), {
@@ -36,12 +37,14 @@ function AppOverlay() {
     ReportService.initialize();
     MoonService.initialize();
     MoonPositionService.initialize();
+    PlanetPositionService.initialize();
     
     return () => {
       PassPredictionService.destroy();
       ReportService.destroy();
       MoonService.destroy();
       MoonPositionService.destroy();
+      PlanetPositionService.destroy();
     };
   }, []);
 

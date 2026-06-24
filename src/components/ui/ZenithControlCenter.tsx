@@ -4,11 +4,12 @@ import { useState } from 'react';
 import SatellitePanel from '@/modules/satellites/components/SatellitePanel';
 import { ISSPanel } from '@/modules/iss/components/ISSPanel';
 import { PassPanel } from '@/modules/pass-predictions/components/PassPanel';
-import { Radio, Navigation, Radar, Globe2, Newspaper, CloudLightning } from 'lucide-react';
+import { Radio, Navigation, Radar, Globe2, Newspaper, CloudLightning, CircleDot } from 'lucide-react';
 import clsx from 'clsx';
 import { useSatelliteStore } from '@/modules/satellites/store/useSatelliteStore';
 
 import { MoonPanel } from '@/modules/moon/components/MoonPanel';
+import { PlanetPanel } from '@/modules/planets/components/PlanetPanel';
 
 type Tab = 'satellites' | 'iss' | 'passes' | 'moon' | 'planets' | 'news' | 'weather';
 
@@ -23,7 +24,7 @@ export default function ZenithControlCenter() {
     // Moon Module
     { id: 'moon', label: 'Moon', icon: <Globe2 className="w-4 h-4" /> },
     // Future scalability tabs
-    { id: 'planets', label: 'Planets', icon: <Globe2 className="w-4 h-4" />, disabled: true },
+    { id: 'planets', label: 'Planets', icon: <CircleDot className="w-4 h-4" />, disabled: false },
     { id: 'news', label: 'News', icon: <Newspaper className="w-4 h-4" />, disabled: true },
     { id: 'weather', label: 'Space Wx', icon: <CloudLightning className="w-4 h-4" />, disabled: true },
   ];
@@ -59,7 +60,7 @@ export default function ZenithControlCenter() {
         {activeTab === 'iss' && <ISSPanel />}
         {activeTab === 'passes' && <PassPanel />}
         {activeTab === 'moon' && <MoonPanel />}
-        {activeTab === 'planets' && <div className="text-gray-400 text-sm text-center py-10">Planet Module coming soon</div>}
+        {activeTab === 'planets' && <PlanetPanel />}
         {activeTab === 'news' && <div className="text-gray-400 text-sm text-center py-10">News Module coming soon</div>}
         {activeTab === 'weather' && <div className="text-gray-400 text-sm text-center py-10">Space Weather Module coming soon</div>}
       </div>
