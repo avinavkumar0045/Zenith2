@@ -1,13 +1,14 @@
 import React from 'react';
-import { ISSObject } from '../types/iss.types';
+import { useISSStore } from '../store/useISSStore';
 
-interface ISSDetailsProps {
-  iss: ISSObject;
-}
+export const ISSDetails: React.FC = () => {
+  const iss = useISSStore(state => state.iss);
+  
+  if (!iss) return null;
 
-export const ISSDetails: React.FC<ISSDetailsProps> = ({ iss }) => {
   return (
     <div className="flex flex-col gap-3 text-slate-300 text-sm">
+
       <div className="grid grid-cols-2 gap-2">
         <div className="bg-slate-800/40 p-2 rounded-lg">
           <div className="text-slate-500 text-xs mb-1">Name</div>

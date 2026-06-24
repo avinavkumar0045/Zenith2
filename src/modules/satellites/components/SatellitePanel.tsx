@@ -6,11 +6,15 @@ import { Radio, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 export default function SatellitePanel() {
-  const { activeSatellites, satelliteCategories, loading, errors } = useSatelliteStore();
+  const activeSatellitesLength = useSatelliteStore(state => state.activeSatellites.length);
+  const satelliteCategories = useSatelliteStore(state => state.satelliteCategories);
+  const loading = useSatelliteStore(state => state.loading);
+  const errors = useSatelliteStore(state => state.errors);
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     SatelliteService.fetchCategory(e.target.value);
   };
+
 
   return (
     <div className="bg-black/60 border border-white/10 backdrop-blur-xl rounded-2xl p-4 w-full max-w-sm pointer-events-auto">
@@ -40,8 +44,9 @@ export default function SatellitePanel() {
 
       <div className="flex justify-between items-center text-sm border-t border-white/10 pt-3 mt-3">
         <span className="text-gray-400">Active Signals</span>
-        <span className="text-amber-500 font-mono font-bold">{activeSatellites.length}</span>
+        <span className="text-amber-500 font-mono font-bold">{activeSatellitesLength}</span>
       </div>
     </div>
   );
 }
+

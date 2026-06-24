@@ -85,7 +85,8 @@ class PassPredictionServiceClass {
 
       const gmst = satellite.gstime(date);
       const positionEcf = satellite.eciToEcf(pv.position, gmst);
-      const lookAngles = satellite.ecfToLookAngle(observerGd, positionEcf);
+      // @ts-ignore: @types/satellite.js defines ecfToLookAngle but runtime exports ecfToLookAngles
+      const lookAngles = satellite.ecfToLookAngles(observerGd, positionEcf);
 
       
       const elevation = satellite.radiansToDegrees(lookAngles.elevation);

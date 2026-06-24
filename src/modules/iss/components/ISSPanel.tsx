@@ -3,11 +3,14 @@ import { useISS } from '../hooks/useISS';
 import { ISSDetails } from './ISSDetails';
 import { Navigation, X } from 'lucide-react';
 import clsx from 'clsx';
+import { useISSStore } from '../store/useISSStore';
 
 export const ISSPanel: React.FC = () => {
-  const { iss, isTracking, locateISS, stopTracking } = useISS();
 
-  if (!iss) return null;
+  const { isTracking, locateISS, stopTracking } = useISS();
+  const hasISS = useISSStore(state => state.iss !== null);
+
+  if (!hasISS) return null;
 
   return (
     <div className="absolute right-4 top-24 z-50 w-80 max-w-full">
@@ -40,9 +43,10 @@ export const ISSPanel: React.FC = () => {
         </div>
         
         <div className="p-4">
-          <ISSDetails iss={iss} />
+          <ISSDetails />
         </div>
       </div>
     </div>
   );
 };
+

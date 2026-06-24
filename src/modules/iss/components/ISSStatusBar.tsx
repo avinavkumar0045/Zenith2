@@ -1,8 +1,9 @@
 import React from 'react';
-import { useISS } from '../hooks/useISS';
+import { useISSStore } from '../store/useISSStore';
 
 export const ISSStatusBar: React.FC = () => {
-  const { iss } = useISS();
+  const iss = useISSStore(state => state.iss);
+
 
   if (!iss) return null;
 

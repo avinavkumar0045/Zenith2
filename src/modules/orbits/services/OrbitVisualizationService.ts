@@ -13,8 +13,9 @@ class OrbitVisualizationServiceClass {
 
     // Listen to satellite selection changes
     this.unsubscribe = useSatelliteStore.subscribe((state, prevState) => {
-      // Re-run if selection changed, or if the selected satellite was updated (propagated)
-      if (state.selectedSatellite !== prevState.selectedSatellite) {
+      // Re-run ONLY if the selected satellite ID changed. 
+      // Do not re-run just because coordinates updated.
+      if (state.selectedSatellite?.id !== prevState.selectedSatellite?.id) {
         this.updateOrbitVisualization(state.selectedSatellite);
       }
     });
@@ -25,7 +26,8 @@ class OrbitVisualizationServiceClass {
       if (selectedSatellite) {
         this.updateOrbitVisualization(selectedSatellite);
       }
-    }, 60000); // Update paths every minute
+    }, 90000); // Phase 5.5: Update paths every 90 seconds
+
   }
 
   private updateOrbitVisualization(satellite: any | null) {

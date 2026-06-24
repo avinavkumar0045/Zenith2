@@ -68,9 +68,9 @@ function AppOverlay() {
         </div>
 
         {/* Floating Components Area */}
-        <div className="flex-1 w-full flex flex-col md:flex-row items-end justify-between pb-4 md:pb-0 gap-4 mt-auto md:mt-0">
+        <div className="flex-1 w-full min-h-0 flex flex-col md:flex-row items-end justify-between pb-4 md:pb-0 gap-4 mt-auto md:mt-0 pointer-events-none">
           {/* Left side panels: Location + Orbit + Reports */}
-          <div className="flex flex-col gap-4 items-start w-full md:w-auto max-h-full overflow-y-auto custom-scrollbar pointer-events-auto pr-2 pb-20">
+          <div className="flex flex-col gap-4 items-start w-full md:w-96 max-h-full overflow-y-auto custom-scrollbar pointer-events-auto pr-2 pb-20">
             <RecentLocations />
             <LocationCard />
             <CelestialReport />
@@ -81,7 +81,7 @@ function AppOverlay() {
 
           
           {/* Right side panels: Satellite & Pass Predictions */}
-          <div className="flex flex-col gap-4 items-end w-full md:w-auto pointer-events-none">
+          <div className="flex flex-col gap-4 items-end w-full md:w-96 pointer-events-none">
             <SatelliteDetails />
             <SatellitePanel />
             <PassPanel />
