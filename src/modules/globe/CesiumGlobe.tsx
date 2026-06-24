@@ -13,6 +13,8 @@ import { OrbitLayer } from './layers/OrbitLayer';
 import { ISSLayer } from '../iss/layers/ISSLayer';
 import { ISSService } from '../iss/services/ISSService';
 
+import { MoonGroundLayer } from '../moon/layers/MoonGroundLayer';
+
 export default function CesiumGlobe() {
   const cesiumContainer = useRef<HTMLDivElement>(null);
   const setGlobeReady = useAppStore((state) => state.setGlobeReady);
@@ -61,18 +63,21 @@ export default function CesiumGlobe() {
     const locationLayer = new LocationLayer();
     const orbitLayer = new OrbitLayer();
     const issLayer = new ISSLayer();
+    const moonGroundLayer = new MoonGroundLayer();
 
     LayerManager.addLayer(dayNightLayer);
     LayerManager.addLayer(satelliteLayer);
     LayerManager.addLayer(locationLayer);
     LayerManager.addLayer(orbitLayer);
     LayerManager.addLayer(issLayer);
+    LayerManager.addLayer(moonGroundLayer);
 
     dayNightLayer.show();
     satelliteLayer.show();
     locationLayer.show();
     orbitLayer.show();
     issLayer.show();
+    moonGroundLayer.show();
     
     // Boot up the ISS Telemetry Service
     ISSService.initialize();

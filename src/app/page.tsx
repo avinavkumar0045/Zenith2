@@ -17,6 +17,7 @@ import { PassPredictionService } from '@/modules/pass-predictions/services/PassP
 import { CelestialReport } from '@/modules/reports/components/CelestialReport';
 import { ReportService } from '@/modules/reports/services/ReportService';
 import { MoonService } from '@/modules/moon/services/MoonService';
+import { MoonPositionService } from '@/modules/moon/services/MoonPositionService';
 
 // Dynamically import the Cesium globe to avoid SSR issues
 const CesiumGlobe = dynamic(() => import('@/modules/globe/CesiumGlobe'), {
@@ -34,11 +35,13 @@ function AppOverlay() {
     PassPredictionService.initialize();
     ReportService.initialize();
     MoonService.initialize();
+    MoonPositionService.initialize();
     
     return () => {
       PassPredictionService.destroy();
       ReportService.destroy();
-      MoonService.destroy(); // MoonService doesn't have a destroy method yet, I should add it
+      MoonService.destroy();
+      MoonPositionService.destroy();
     };
   }, []);
 

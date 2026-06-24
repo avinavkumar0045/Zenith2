@@ -2,6 +2,7 @@ import { useLocationStore } from '../../location/store/useLocationStore';
 import { usePassStore } from '../../pass-predictions/store/usePassStore';
 import { useSatelliteStore } from '../../satellites/store/useSatelliteStore';
 import { useMoonStore } from '../../moon/store/useMoonStore';
+import { useMoonPositionStore } from '../../moon/store/useMoonPositionStore';
 import { useReportStore } from '../store/useReportStore';
 import { ScoringService } from './ScoringService';
 import { ObservationService } from './ObservationService';
@@ -12,6 +13,7 @@ class ReportServiceClass {
   private unsubscribePassStore: (() => void) | null = null;
   private unsubscribeSatStore: (() => void) | null = null;
   private unsubscribeMoonStore: (() => void) | null = null;
+  private unsubscribeMoonPosStore: (() => void) | null = null;
 
   public initialize() {
     // 1. Listen to explicit location changes
@@ -38,6 +40,13 @@ class ReportServiceClass {
     // 4. Listen to moon changes
     this.unsubscribeMoonStore = useMoonStore.subscribe((state, prevState) => {
       if (state.lastUpdated !== prevState.lastUpdated && !state.loading) {
+        this.generateReport();
+      }
+    });
+
+    // 5. Listen to moon position changes
+    this.unsubscribeMoonPosStore = useMoonPositionStore.subscribe((state, prevState) => {
+      if (state.lastUpdated !== prevState.lastUpdated) {
         this.generateReport();
       }
     });
@@ -76,15 +85,23 @@ class ReportServiceClass {
 
     // Inject Moon Intelligence
     const { moonData } = useMoonStore.getState();
+    const { regionName, isVisibleFromLocation } = useMoonPositionStore.getState();
+
     if (moonData) {
-      if (moonData.isVisible) {
+      if (regionName) {
+        recommendations.push(`Moon currently overhead above the ${regionName}.`);
+      }
+      
+      if (isVisibleFromLocation) {
         if (moonData.observationScore >= 8) {
           recommendations.push(`Moon observation conditions are excellent (${moonData.phaseName}).`);
         } else if (moonData.observationScore >= 5) {
           recommendations.push(`Moon currently visible (${moonData.phaseName}).`);
+        } else {
+          recommendations.push(`Moon is visible from the selected location.`);
         }
       } else {
-        recommendations.push("Moon currently below horizon.");
+        recommendations.push("Moon is currently below the horizon.");
       }
     }
 
@@ -107,6 +124,8 @@ class ReportServiceClass {
   public destroy() {
     if (this.unsubscribePassStore) this.unsubscribePassStore();
     if (this.unsubscribeSatStore) this.unsubscribeSatStore();
+    if (this.unsubscribeMoonStore) this.unsubscribeMoonStore();
+    if (this.unsubscribeMoonPosStore) this.unsubscribeMoonPosStore();
   }
 }
 

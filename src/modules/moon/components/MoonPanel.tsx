@@ -1,5 +1,6 @@
 import React from 'react';
 import { useMoonStore } from '../store/useMoonStore';
+import { useMoonPositionStore } from '../store/useMoonPositionStore';
 import { useLocationStore } from '../../location/store/useLocationStore';
 import { MoonPhaseVisualizer } from './MoonPhaseVisualizer';
 import { MoonDetails } from './MoonDetails';
@@ -10,6 +11,7 @@ export function MoonPanel() {
   const moonData = useMoonStore(state => state.moonData);
   const loading = useMoonStore(state => state.loading);
   const activeLocation = useLocationStore(state => state.activeLocation);
+  const moonPosition = useMoonPositionStore();
 
   if (!activeLocation) {
     return (
@@ -58,6 +60,30 @@ export function MoonPanel() {
           </div>
 
           <MoonDetails />
+
+          {/* MOON POSITION EXTENSION (PHASE 6B) */}
+          <div className="mt-4 pt-4 border-t border-white/10">
+            <h5 className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-3">Moon Position</h5>
+            <div className="bg-black/20 rounded-lg p-3">
+              <div className="text-xs text-gray-400 mb-1">Currently Above</div>
+              <div className="text-sm text-white font-medium mb-3">{moonPosition.regionName || 'Calculating...'}</div>
+              
+              <div className="grid grid-cols-2 gap-2 text-xs">
+                <div>
+                  <span className="text-gray-500 block">Sub-Lunar Latitude</span>
+                  <span className="text-gray-200 font-mono">
+                    {moonPosition.subLunarLatitude !== null ? `${moonPosition.subLunarLatitude.toFixed(2)}°` : '--'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-gray-500 block">Sub-Lunar Longitude</span>
+                  <span className="text-gray-200 font-mono">
+                    {moonPosition.subLunarLongitude !== null ? `${moonPosition.subLunarLongitude.toFixed(2)}°` : '--'}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </motion.div>
       ) : (
         !loading && <div className="text-gray-400 text-sm">No lunar data available.</div>

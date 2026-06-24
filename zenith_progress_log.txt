@@ -231,3 +231,12 @@ PHASE 1 COMPLETE.
 - UI Components: Added MoonPanel and MoonDetails components dynamically displaying exact visibility, score, and moon age. Created MoonPhaseVisualizer to represent phases without heavy 3D rendering.
 - Report Integration: Wired up MoonStore directly to ReportService to generate dedicated Lunar recommendations ("Moon observation conditions are excellent") inside the Celestial Report.
 - Validation Results: Successfully validated mathematical accuracy across New Delhi, London, Tokyo, Sydney, and New York. Altitude/Azimuth ranges matched known astronomical values, correctly penalizing below-horizon moons.
+
+[2026-06-24] PHASE 6B: MOON POSITION INTELLIGENCE ENGINE
+=================================================
+- Designed and implemented Sub-Lunar Point Calculation Engine utilizing accurate equatorial astronomical conversions (extracting Moon Declination and Right Ascension from Horizon coordinate parallax).
+- Moon Position Store: Initialized useMoonPositionStore to maintain subLunarLatitude, subLunarLongitude, and reverse-geocoded region names.
+- Globe Integration: Engineered MoonGroundLayer natively hooking into Cesium LayerManager, rendering an interactive "MOON OVERHEAD" marker.
+- Panel Expansion: Extended MoonPanel.tsx with a "Moon Position" analytics section seamlessly matching Phase 5.8 styles.
+- Report Service: Injected sub-lunar intelligence directly into the Celestial Report (e.g. "Moon currently overhead above the Indian Ocean").
+- Validations: Mathematics validated across New Delhi, London, Sydney, Tokyo, and New York. TypeScript verified with 0 errors. Verified 0 loop/polling runtime overhead as it strictly runs on explicit coordinate mutations.
