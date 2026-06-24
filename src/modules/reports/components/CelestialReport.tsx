@@ -130,6 +130,51 @@ export function CelestialReport() {
               </div>
             )}
 
+            {/* Observation Plan Integration (Phase 7B) */}
+            {report.observationPlan && report.observationPlan.rankedTargets.length > 0 && (
+              <div className="pt-3 mt-3 border-t border-white/10 space-y-3">
+                <h3 className="text-xs font-bold text-white uppercase tracking-widest flex items-center mb-2">
+                  <Navigation className="w-3 h-3 mr-1.5 text-blue-400" /> Observation Plan
+                </h3>
+
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div className="bg-white/5 rounded p-2 border border-white/10">
+                    <span className="text-[9px] text-gray-500 uppercase block mb-0.5">Tonight's Quality</span>
+                    <span className="text-gray-200 font-medium">{report.observationPlan.overallQuality}</span>
+                  </div>
+                  <div className="bg-white/5 rounded p-2 border border-white/10">
+                    <span className="text-[9px] text-gray-500 uppercase block mb-0.5">Best Time</span>
+                    <span className="text-blue-300 font-medium">
+                      {report.observationPlan.bestTargetTime ? new Date(report.observationPlan.bestTargetTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <span className="text-[10px] text-gray-500 uppercase">Chronological Agenda</span>
+                  {report.observationPlan.agenda.slice(0, 4).map((item, i) => (
+                    <div key={i} className="flex justify-between items-center bg-white/5 px-2 py-1.5 rounded text-xs">
+                      <div className="flex items-center space-x-2">
+                        <span className="text-gray-400 font-mono text-[10px]">{new Date(item.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        <span className="text-gray-200 font-medium">{item.targetName}</span>
+                      </div>
+                      <span className={`text-[9px] px-1.5 py-0.5 rounded border ${
+                        item.quality === 'Excellent' ? 'bg-green-500/20 text-green-300 border-green-500/30' :
+                        item.quality === 'Good' ? 'bg-blue-500/20 text-blue-300 border-blue-500/30' :
+                        item.quality === 'Average' ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/30' :
+                        'bg-red-500/20 text-red-300 border-red-500/30'
+                      }`}>
+                        {item.quality}
+                      </span>
+                    </div>
+                  ))}
+                  {report.observationPlan.agenda.length > 4 && (
+                    <div className="text-center text-[10px] text-gray-500 pt-1">+ {report.observationPlan.agenda.length - 4} more targets</div>
+                  )}
+                </div>
+              </div>
+            )}
+
           </div>
         )}
       </motion.div>

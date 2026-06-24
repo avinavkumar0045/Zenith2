@@ -16,6 +16,7 @@ import ZenithControlCenter from '@/components/ui/ZenithControlCenter';
 import { PassPredictionService } from '@/modules/pass-predictions/services/PassPredictionService';
 import { CelestialReport } from '@/modules/reports/components/CelestialReport';
 import { SkyIntelligenceService } from '@/modules/reports/services/SkyIntelligenceService';
+import { ObservationPlanningService } from '@/modules/reports/services/ObservationPlanningService';
 import { MoonService } from '@/modules/moon/services/MoonService';
 import { MoonPositionService } from '@/modules/moon/services/MoonPositionService';
 import { PlanetPositionService } from '@/modules/planets/services/PlanetPositionService';
@@ -35,6 +36,7 @@ function AppOverlay() {
   useEffect(() => {
     PassPredictionService.initialize();
     SkyIntelligenceService.initialize();
+    ObservationPlanningService.initialize();
     MoonService.initialize();
     MoonPositionService.initialize();
     PlanetPositionService.initialize();
@@ -42,6 +44,7 @@ function AppOverlay() {
     return () => {
       PassPredictionService.destroy();
       SkyIntelligenceService.destroy();
+      ObservationPlanningService.destroy();
       MoonService.destroy();
       MoonPositionService.destroy();
       PlanetPositionService.destroy();

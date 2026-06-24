@@ -259,3 +259,27 @@ PHASE 1 COMPLETE.
 - Layout Compliance: Rebuilt CelestialReport.tsx mapping perfectly to the UnifiedSkyReport format. Kept exact Phase 6C dimensions, grid structure, aesthetic, and fixed screen position.
 - Performance: Guaranteed zero polling and zero setInterval updates. The new Engine only re-fires selectively when underlying Zustand stores trigger a relevant difference.
 - Verified validation completely clean (`tsc --noEmit` exit 0).
+
+[2026-06-24 15:59:00] PHASE 7B: OBSERVATION PLANNING ENGINE
+======================================================
+- Files Created: 
+  - src/modules/reports/types/observation-planning.types.ts
+  - src/modules/reports/store/useObservationPlanningStore.ts
+  - src/modules/reports/services/ObservationWindowEngine.ts
+  - src/modules/reports/services/ObservationQualityEngine.ts
+  - src/modules/reports/services/TargetRankingEngine.ts
+  - src/modules/reports/services/ObservationAgendaEngine.ts
+  - src/modules/reports/services/ObservationPlanningService.ts
+- Files Modified: 
+  - src/modules/reports/types/sky-intelligence.types.ts
+  - src/modules/reports/services/SkyIntelligenceService.ts
+  - src/modules/reports/components/CelestialReport.tsx
+  - src/app/page.tsx
+- Observation Window Engine: Successfully implemented to generate peak visibility blocks and estimated observation durations natively leveraging Phase 6C metrics. Uses a lightweight 15deg/hour approximation to predict Moon and Planet tracks without costly full-night orbital propagation overhead. Real pass windows parsed exactly for ISS & satellites.
+- Observation Quality Engine: Computes Excellent/Good/Average/Poor labels based on a matrix of target altitudes vs local daylight factors to prevent sending users outside during the daytime or for low-horizon obscured targets.
+- Target Ranking Engine: Produces a 1 to N ranked list prioritizing fleeting high-value targets (like ISS Passes > 40 degrees) over slower sustained targets (Planets, Moon) to ensure users never miss an anomaly.
+- Observation Agenda Engine: Outputs a chronologically sorted evening itinerary tracking precisely when targets peak.
+- Unified Sky Report Integration: Directly injected the "ObservationPlan" domain model into the unified report. 
+- UI Changes: Retrofitted `CelestialReport.tsx` by seamlessly appending compact, styled, chronological agenda elements into the existing report card footprint without altering screen positioning, Z-indexes, or adding pop-ups.
+- Validation Results: `tsc --noEmit` exits cleanly (0 errors). The logic fully accommodates New York daytime constraints vs Sydney nighttime passes simultaneously.
+- Performance Notes: Implemented purely event-driven using Zustand subscriptions (`useObservationPlanningStore`). No polling or Cesium JS loops added. Meets Phase 5.5 performance standards exactly.

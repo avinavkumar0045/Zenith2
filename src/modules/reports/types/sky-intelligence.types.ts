@@ -27,5 +27,9 @@ export interface UnifiedSkyReport {
   };
   recommendations: string[];
   warnings: string[];
+  
+  // Phase 7B - Observation Planning Integration
+  observationPlan: import('./observation-planning.types').ObservationPlan | null;
+  
   lastUpdated: number;
 }

@@ -10,6 +10,8 @@ import { SkyRecommendationEngine } from './SkyRecommendationEngine';
 import { UnifiedSkyReport } from '../types/sky-intelligence.types';
 import * as SunCalc from 'suncalc';
 
+import { useObservationPlanningStore } from '../store/useObservationPlanningStore';
+
 class SkyIntelligenceServiceClass {
   private unsubscribeLocation: (() => void) | null = null;
   private unsubscribeMoon: (() => void) | null = null;
@@ -17,6 +19,7 @@ class SkyIntelligenceServiceClass {
   private unsubscribePass: (() => void) | null = null;
   private unsubscribeIss: (() => void) | null = null;
   private unsubscribeSat: (() => void) | null = null;
+  private unsubscribePlan: (() => void) | null = null;
 
   public initialize() {
     this.unsubscribeLocation = useLocationStore.subscribe((state, prevState) => {
@@ -51,6 +54,12 @@ class SkyIntelligenceServiceClass {
 
     this.unsubscribeSat = useSatelliteStore.subscribe((state, prevState) => {
       if (state.activeSatellites.length !== prevState.activeSatellites.length) {
+        this.generateReport();
+      }
+    });
+
+    this.unsubscribePlan = useObservationPlanningStore.subscribe((state, prevState) => {
+      if (state.plan !== prevState.plan) {
         this.generateReport();
       }
     });
@@ -117,6 +126,7 @@ class SkyIntelligenceServiceClass {
       },
       recommendations: SkyRecommendationEngine.getRecommendations(),
       warnings: SkyRecommendationEngine.getWarnings(),
+      observationPlan: useObservationPlanningStore.getState().plan,
       lastUpdated: Date.now()
     };
 
@@ -130,6 +140,7 @@ class SkyIntelligenceServiceClass {
     if (this.unsubscribePass) this.unsubscribePass();
     if (this.unsubscribeIss) this.unsubscribeIss();
     if (this.unsubscribeSat) this.unsubscribeSat();
+    if (this.unsubscribePlan) this.unsubscribePlan();
   }
 }
 
