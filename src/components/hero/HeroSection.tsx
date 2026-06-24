@@ -2,9 +2,38 @@
 
 import { motion } from 'framer-motion';
 import { useAppStore } from '@/store/useAppStore';
+import { useState } from 'react';
+import { LocationService } from '@/modules/location/services/LocationService';
 
 export default function HeroSection() {
   const isGlobeReady = useAppStore((state) => state.isGlobeReady);
+  const setCurrentView = useAppStore((state) => state.setCurrentView);
+  const [isGeolocating, setIsGeolocating] = useState(false);
+
+  const handleAnalyzeSky = () => {
+    if (!navigator.geolocation) {
+      alert("Geolocation is not supported by your browser");
+      return;
+    }
+    setIsGeolocating(true);
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        setCurrentView('analyze');
+        await LocationService.setLocationFromCoordinates(latitude, longitude, "Current Location");
+        setIsGeolocating(false);
+      },
+      (error) => {
+        console.error("Error getting location", error);
+        alert("Unable to retrieve your location");
+        setIsGeolocating(false);
+      }
+    );
+  };
+
+  const handleExploreEarth = () => {
+    setCurrentView('explore');
+  };
 
   // Animation variants
   const containerVariants = {
@@ -72,11 +101,18 @@ export default function HeroSection() {
           variants={itemVariants}
           className="flex flex-col sm:flex-row gap-6 justify-center pointer-events-auto"
         >
-          <button className="px-8 py-4 bg-white text-black rounded-full font-medium text-lg hover:bg-gray-100 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.3)]">
-            Analyze My Sky
+          <button 
+            onClick={handleAnalyzeSky}
+            disabled={isGeolocating}
+            className="px-8 py-4 bg-white text-black rounded-full font-medium text-lg hover:bg-gray-100 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.3)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          >
+            {isGeolocating ? 'Locating...' : 'Analyze My Sky'}
           </button>
           
-          <button className="px-8 py-4 bg-transparent border border-white/30 text-white rounded-full font-medium text-lg hover:bg-white/10 backdrop-blur-md transition-colors">
+          <button 
+            onClick={handleExploreEarth}
+            className="px-8 py-4 bg-transparent border border-white/30 text-white rounded-full font-medium text-lg hover:bg-white/10 backdrop-blur-md transition-colors"
+          >
             Explore Earth
           </button>
         </motion.div>

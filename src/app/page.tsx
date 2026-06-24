@@ -8,14 +8,11 @@ import LocationCard from '@/modules/location/components/LocationCard';
 import LocationStatus from '@/modules/location/components/LocationStatus';
 import RecentLocations from '@/modules/location/components/RecentLocations';
 import { useLocation } from '@/modules/location/hooks/useLocation';
-import SatellitePanel from '@/modules/satellites/components/SatellitePanel';
 import SatelliteDetails from '@/modules/satellites/components/SatelliteDetails';
 import OrbitPanel from '@/modules/orbits/components/OrbitPanel';
 import OrbitLegend from '@/modules/orbits/components/OrbitLegend';
 import OrbitTimeline from '@/modules/orbits/components/OrbitTimeline';
-import { ISSPanel } from '@/modules/iss/components/ISSPanel';
-import { ISSStatusBar } from '@/modules/iss/components/ISSStatusBar';
-import { PassPanel } from '@/modules/pass-predictions/components/PassPanel';
+import ZenithControlCenter from '@/components/ui/ZenithControlCenter';
 import { PassPredictionService } from '@/modules/pass-predictions/services/PassPredictionService';
 import { CelestialReport } from '@/modules/reports/components/CelestialReport';
 import { ReportService } from '@/modules/reports/services/ReportService';
@@ -26,8 +23,11 @@ const CesiumGlobe = dynamic(() => import('@/modules/globe/CesiumGlobe'), {
   loading: () => null,
 });
 
+import { useAppStore } from '@/store/useAppStore';
+
 function AppOverlay() {
   const { activeLocation } = useLocation();
+  const currentView = useAppStore(state => state.currentView);
 
   useEffect(() => {
     PassPredictionService.initialize();
@@ -46,13 +46,9 @@ function AppOverlay() {
         <CesiumGlobe />
       </div>
 
-      {/* Hero overlay fades out when an active location exists */}
-      {!activeLocation && <HeroSection />}
+      {/* Hero overlay fades out when an active location exists or in explore mode */}
+      {!activeLocation && currentView !== 'explore' && <HeroSection />}
       
-      {/* Phase 3B: ISS Components */}
-      <ISSPanel />
-      <ISSStatusBar />
-
       {/* Main UI Layer (Always active, top level) */}
       <div className="absolute inset-0 z-20 pointer-events-none flex flex-col p-4 md:p-8">
         
@@ -71,7 +67,7 @@ function AppOverlay() {
         <div className="flex-1 w-full min-h-0 flex flex-col md:flex-row items-end justify-between pb-4 md:pb-0 gap-4 mt-auto md:mt-0 pointer-events-none">
           {/* Left side panels: Location + Orbit + Reports */}
           <div className="flex flex-col gap-4 items-start w-full md:w-96 max-h-full overflow-y-auto custom-scrollbar pointer-events-auto pr-2 pb-20">
-            <RecentLocations />
+            {/* <RecentLocations /> */}
             <LocationCard />
             <CelestialReport />
             {/* Phase 3A: Orbit Visualization Controls */}
@@ -80,11 +76,10 @@ function AppOverlay() {
           </div>
 
           
-          {/* Right side panels: Satellite & Pass Predictions */}
+          {/* Right side panels: Zenith Control Center */}
           <div className="flex flex-col gap-4 items-end w-full md:w-96 pointer-events-none">
             <SatelliteDetails />
-            <SatellitePanel />
-            <PassPanel />
+            <ZenithControlCenter />
           </div>
         </div>
 

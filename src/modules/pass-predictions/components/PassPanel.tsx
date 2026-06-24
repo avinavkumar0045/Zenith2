@@ -13,7 +13,7 @@ export const PassPanel: React.FC = () => {
   if (!selectedSatellite) return null;
 
   return (
-    <div className="bg-slate-900/80 backdrop-blur-md border border-slate-700/50 rounded-2xl shadow-2xl p-4 w-80 max-w-full pointer-events-auto flex flex-col mt-4">
+    <div className="w-full flex flex-col mt-2">
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center gap-2 text-white">
           <Radar size={18} className="text-blue-400" />

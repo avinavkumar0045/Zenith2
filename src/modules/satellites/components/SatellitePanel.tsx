@@ -17,7 +17,7 @@ export default function SatellitePanel() {
 
 
   return (
-    <div className="bg-black/60 border border-white/10 backdrop-blur-xl rounded-2xl p-4 w-full max-w-sm pointer-events-auto">
+    <div className="w-full">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 flex items-center gap-2">
           <Radio className="w-4 h-4 text-amber-500" /> Orbital Infrastructure
