@@ -449,3 +449,16 @@ PHASE 1 COMPLETE.
   - Demonstrated seamless directional observer guidance ("Look North-East and high above the horizon") natively bound to the top-ranked upcoming opportunity.
 - Performance Notes:
   - Opportunities recalculate immediately upon valid Zustand state shifts, ensuring real-time UI forecasting with zero memory leaks or unoptimized DOM layout shifts.
+
+[2026-06-25 00:07:00] PHASE UI-1: CONTROL CENTER UX REFINEMENT & PANEL OPTIMIZATION
+======================================================
+- Files Modified: 
+  - src/modules/location/components/LocationStatus.tsx
+  - src/modules/reports/components/CelestialReport.tsx
+  - src/components/ui/ZenithControlCenter.tsx
+- UX Adjustments:
+  - ISSUE #1: Extracted the active location name out of the top-right header pill, truncating it cleanly to solely display Night/Day states and local time ("🌙 Night | 23:49"), preventing logical duplication with the main Location Card.
+  - ISSUE #2: Overhauled the Unified Sky Report to render as a collapsible accordion relying on Framer Motion AnimatePresence `height: 'auto'` bindings to avoid jarring UI layout jumps while mitigating vertical screen-space consumption.
+  - ISSUE #3: Decommissioned horizontal module tabs spanning the right panel. Engineered a vertical stacked-accordion module launcher adhering strictly to single-open principles, maintaining glassmorphism bounds and aria accessibility standards.
+- Validation:
+  - TypeScript checked (0 Errors). No architectural astronomy logic or Celestial Rendering rules were compromised.
