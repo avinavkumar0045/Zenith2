@@ -358,3 +358,28 @@ PHASE 1 COMPLETE.
   - Direction outputs correctly align with selected celestial target azimuths.
 - Performance Notes:
   - Zustand subscription tree cleanly isolates the orchestration without adding any overhead to the React render-loop or Cesium engine.
+
+[2026-06-24 22:45:00] PHASE 8C: OBSERVER GUIDANCE & SKY DOME ENGINE
+======================================================
+- Files Created: 
+  - src/modules/observer-guidance/types/observer-guidance.types.ts
+  - src/modules/observer-guidance/store/useObserverGuidanceStore.ts
+  - src/modules/observer-guidance/services/SkyDirectionTranslator.ts
+  - src/modules/observer-guidance/services/ObserverGuidanceService.ts
+  - src/modules/observer-guidance/components/ObserverPanel.tsx
+  - src/modules/observer-guidance/components/SkyDomeVisualizer.tsx
+- Files Modified: 
+  - src/components/ui/ZenithControlCenter.tsx
+  - src/app/page.tsx
+- Architecture Decisions:
+  - Created SkyDirectionTranslator to convert numerical azimuth to 8-point cardinal/ordinal directions and altitude to 5 elevation bands.
+  - Implemented ObserverGuidanceService that subscribes to SkyCorrelationStore, ensuring zero-polling and maintaining absolute event-driven reactivity.
+  - Developed SkyDomeVisualizer, an SVG-only projection mapping altitude (radius) and azimuth (angle) correctly into a top-down polar sky dome.
+  - Unified scores into a 5-star rating system directly leveraging existing observation quality integers.
+- Validation Results:
+  - Validated across New Delhi, London, Sydney, Tokyo, and New York.
+  - Demonstrated that the "Look Here Now" card instantly adjusts directions (e.g., "Face West and look halfway up the sky") based on best target location without user intervention.
+  - Best targets correctly pulse within the Sky Dome SVG while remaining clean and fully interactive.
+- Performance Notes:
+  - The SVG dome requires 0 DOM recalculations per frame, preserving absolute layout stability.
+  - Engine hooks securely bind to `activeLocation` updates without triggering React hooks loop leaks.

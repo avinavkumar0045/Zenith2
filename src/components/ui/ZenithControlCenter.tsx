@@ -4,15 +4,16 @@ import { useState } from 'react';
 import SatellitePanel from '@/modules/satellites/components/SatellitePanel';
 import { ISSPanel } from '@/modules/iss/components/ISSPanel';
 import { PassPanel } from '@/modules/pass-predictions/components/PassPanel';
-import { Radio, Navigation, Radar, Globe2, Newspaper, CloudLightning, CircleDot, Sparkles } from 'lucide-react';
+import { Radio, Navigation, Radar, Globe2, Newspaper, CloudLightning, CircleDot, Sparkles, Compass } from 'lucide-react';
 import clsx from 'clsx';
 import { useSatelliteStore } from '@/modules/satellites/store/useSatelliteStore';
 
 import { MoonPanel } from '@/modules/moon/components/MoonPanel';
 import { PlanetPanel } from '@/modules/planets/components/PlanetPanel';
 import ConstellationPanel from '@/modules/constellations/components/ConstellationPanel';
+import ObserverPanel from '@/modules/observer-guidance/components/ObserverPanel';
 
-type Tab = 'satellites' | 'iss' | 'passes' | 'moon' | 'planets' | 'constellations' | 'news' | 'weather';
+type Tab = 'satellites' | 'iss' | 'passes' | 'moon' | 'planets' | 'constellations' | 'observer' | 'news' | 'weather';
 
 export default function ZenithControlCenter() {
   const [activeTab, setActiveTab] = useState<Tab>('satellites');
@@ -28,6 +29,8 @@ export default function ZenithControlCenter() {
     { id: 'planets', label: 'Planets', icon: <CircleDot className="w-4 h-4" />, disabled: false },
     // Constellations Module
     { id: 'constellations', label: 'Constellations', icon: <Sparkles className="w-4 h-4" />, disabled: false },
+    // Observer Guidance Module
+    { id: 'observer', label: 'Observer', icon: <Compass className="w-4 h-4" />, disabled: false },
     // Future scalability tabs
     { id: 'news', label: 'News', icon: <Newspaper className="w-4 h-4" />, disabled: true },
     { id: 'weather', label: 'Space Wx', icon: <CloudLightning className="w-4 h-4" />, disabled: true },
@@ -66,6 +69,7 @@ export default function ZenithControlCenter() {
         {activeTab === 'moon' && <MoonPanel />}
         {activeTab === 'planets' && <PlanetPanel />}
         {activeTab === 'constellations' && <ConstellationPanel />}
+        {activeTab === 'observer' && <ObserverPanel />}
         {activeTab === 'news' && <div className="text-gray-400 text-sm text-center py-10">News Module coming soon</div>}
         {activeTab === 'weather' && <div className="text-gray-400 text-sm text-center py-10">Space Weather Module coming soon</div>}
       </div>

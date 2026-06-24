@@ -23,6 +23,7 @@ import { PlanetPositionService } from '@/modules/planets/services/PlanetPosition
 import { WeatherService } from '@/modules/weather/services/WeatherService';
 import { ConstellationIntelligenceService } from '@/modules/constellations/services/ConstellationIntelligenceService';
 import { SkyCorrelationService } from '@/modules/sky-correlation/services/SkyCorrelationService';
+import { ObserverGuidanceService } from '@/modules/observer-guidance/services/ObserverGuidanceService';
 
 // Dynamically import the Cesium globe to avoid SSR issues
 const CesiumGlobe = dynamic(() => import('@/modules/globe/CesiumGlobe'), {
@@ -40,6 +41,7 @@ function AppOverlay() {
     WeatherService.initialize();
     ConstellationIntelligenceService.initialize();
     SkyCorrelationService.initialize();
+    ObserverGuidanceService.initialize();
     PassPredictionService.initialize();
     SkyIntelligenceService.initialize();
     ObservationPlanningService.initialize();
@@ -51,6 +53,7 @@ function AppOverlay() {
       WeatherService.destroy();
       ConstellationIntelligenceService.destroy();
       SkyCorrelationService.destroy();
+      ObserverGuidanceService.destroy();
       PassPredictionService.destroy();
       SkyIntelligenceService.destroy();
       ObservationPlanningService.destroy();
