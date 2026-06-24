@@ -3,8 +3,10 @@ import { useSkyIntelligenceStore } from '../store/useSkyIntelligenceStore';
 import { useSkyCorrelationStore } from '../../sky-correlation/store/useSkyCorrelationStore';
 import { useSSAStore } from '../../ssa/store/useSSAStore';
 import { useEventStore } from '../../events/store/useEventStore';
+import { useOpportunityStore } from '../../opportunity/store/useOpportunityStore';
+import { SkyDirectionTranslator } from '../../observer-guidance/services/SkyDirectionTranslator';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Moon, Sun, CloudLightning, Globe2, AlertTriangle, CheckCircle2, Navigation, Activity, ChevronDown, ChevronUp, Radar, ShieldAlert, BellRing } from 'lucide-react';
+import { Sparkles, Moon, Sun, CloudLightning, Globe2, AlertTriangle, CheckCircle2, Navigation, Activity, ChevronDown, ChevronUp, Radar, ShieldAlert, BellRing, Target } from 'lucide-react';
 import { useLocationStore } from '../../location/store/useLocationStore';
 import { useWeatherStore } from '../../weather/store/useWeatherStore';
 import { CloudRain } from 'lucide-react';
@@ -14,6 +16,7 @@ export function CelestialReport() {
   const correlationReport = useSkyCorrelationStore(state => state.report);
   const ssaReport = useSSAStore(state => state.report);
   const { topEvent, importantEvents } = useEventStore();
+  const { bestOpportunity, forecastQuality, forecastSummary } = useOpportunityStore();
   const activeLocation = useLocationStore(state => state.activeLocation);
   const { weather } = useWeatherStore();
   const [isExpanded, setIsExpanded] = useState(true);
@@ -43,6 +46,58 @@ export function CelestialReport() {
           </div>
         ) : (
           <div className="space-y-4">
+
+            {/* NEXT BEST OPPORTUNITY (Phase 9C) */}
+            {bestOpportunity && (
+              <div className="bg-gradient-to-br from-cyan-900/30 to-blue-900/30 border border-cyan-500/30 rounded-lg p-3">
+                <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-widest flex items-center mb-2">
+                  <Target className="w-3 h-3 mr-1.5" /> Next Best Opportunity
+                </span>
+                
+                <div className="flex items-center mb-2">
+                  <span className="text-xl mr-2 leading-none">
+                    {bestOpportunity.category === 'ISS' ? '🚀' : bestOpportunity.category === 'MOON' ? '🌙' : bestOpportunity.category === 'PLANET' ? '🪐' : bestOpportunity.category === 'CONSTELLATION' ? '✨' : '🔭'}
+                  </span>
+                  <span className="text-sm font-bold text-white">{bestOpportunity.title}</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 mb-2 pb-2 border-b border-cyan-500/20 text-xs">
+                  <div>
+                    <span className="text-[9px] text-gray-400 uppercase block">Best Time</span>
+                    <span className="text-cyan-200">{new Date(bestOpportunity.bestTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-gray-400 uppercase block">Starts In</span>
+                    <span className="text-cyan-200">{bestOpportunity.minutesUntil} min</span>
+                  </div>
+                  <div>
+                    <span className="text-[9px] text-gray-400 uppercase block">Confidence</span>
+                    <span className={bestOpportunity.confidence === 'High' ? 'text-green-400' : bestOpportunity.confidence === 'Medium' ? 'text-yellow-400' : 'text-red-400'}>{bestOpportunity.confidence}</span>
+                  </div>
+                </div>
+
+                <div className="mb-2">
+                  <span className="text-[9px] text-cyan-400/80 uppercase block mb-0.5">Reason</span>
+                  <span className="text-xs text-gray-300 leading-tight">{bestOpportunity.description}</span>
+                </div>
+
+                {(bestOpportunity.azimuth !== undefined && bestOpportunity.altitude !== undefined) && (
+                  <div className="bg-cyan-900/20 p-2 rounded border border-cyan-500/20">
+                    <span className="text-[9px] text-cyan-300 uppercase block mb-0.5">Guidance</span>
+                    <span className="text-xs text-cyan-100 italic">{SkyDirectionTranslator.generateInstruction(bestOpportunity.azimuth, bestOpportunity.altitude)}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* FORECAST QUALITY (Phase 9C) */}
+            <div className="bg-white/5 border border-white/10 rounded-lg p-3">
+               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block mb-1">Forecast Quality</span>
+               <span className={`text-sm font-bold block mb-1 ${forecastQuality === 'EXCELLENT' ? 'text-green-400' : forecastQuality === 'GOOD' ? 'text-blue-400' : forecastQuality === 'AVERAGE' ? 'text-yellow-400' : 'text-red-400'}`}>
+                 {forecastQuality}
+               </span>
+               <p className="text-[11px] text-gray-400 leading-tight">{forecastSummary}</p>
+            </div>
 
             {/* UPCOMING EVENTS (Phase 9B) */}
             {(topEvent || importantEvents.length > 0) && (

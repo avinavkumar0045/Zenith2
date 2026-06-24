@@ -427,3 +427,25 @@ PHASE 1 COMPLETE.
   - Weather changes correctly inject or remove weather-related events without triggering infinite render cycles.
 - Performance Notes:
   - Event alerts are generated inside pure functional array mappings without firing unoptimized DOM loops. Zero continuous `requestAnimationFrame` render cycles introduced.
+
+[2026-06-24 23:35:00] PHASE 9C: PREDICTIVE SPACE INTELLIGENCE & OPPORTUNITY FORECAST ENGINE
+======================================================
+- Files Created: 
+  - src/modules/opportunity/types/opportunity.types.ts
+  - src/modules/opportunity/store/useOpportunityStore.ts
+  - src/modules/opportunity/services/OpportunityDetectionEngine.ts
+  - src/modules/opportunity/services/OpportunityRankingEngine.ts
+  - src/modules/opportunity/services/OpportunityForecastEngine.ts
+  - src/modules/opportunity/services/OpportunityIntelligenceService.ts
+- Files Modified: 
+  - src/modules/reports/components/CelestialReport.tsx
+  - src/app/page.tsx
+- Architecture Decisions:
+  - Deployed an Opportunity Detection system calculating impending observation windows restricted entirely to a 6-hour forecast horizon without employing heavy orbital propagators.
+  - Implemented the `OpportunityRankingEngine` strictly prioritizing fleeting orbital transits (like ISS) above persistent astronomical phenomena (like Constellation visibility).
+  - Maintained zero-polling constraints by merging `OpportunityIntelligenceService` securely into existing location, pass, and moon/planet store updates.
+- Validation Results:
+  - Dynamically assessed New Delhi, London, Sydney, Tokyo, and New York coordinates, proving that weather thresholds successfully suppress celestial opportunities in poor conditions.
+  - Demonstrated seamless directional observer guidance ("Look North-East and high above the horizon") natively bound to the top-ranked upcoming opportunity.
+- Performance Notes:
+  - Opportunities recalculate immediately upon valid Zustand state shifts, ensuring real-time UI forecasting with zero memory leaks or unoptimized DOM layout shifts.
