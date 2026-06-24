@@ -312,3 +312,25 @@ PHASE 1 COMPLETE.
   - ObservationPlanningService penalizes the ranking scores dynamically for celestial bodies caught behind weather fronts.
   - CelestialReport.tsx incorporates a compact 'Conditions' UI block displaying live Cloud/Vis percentiles mapping exactly to the fixed UX rules established in Phase 6.
 - Validation Summary: The system cleanly fetches data via `WeatherService` specifically bound to the `useLocationStore` subscription. Zero `setInterval` loops or global render bottlenecks detected. TypeScript checks returned 0 Errors.
+
+[2026-06-24 22:20:00] PHASE 8A: CONSTELLATION INTELLIGENCE ENGINE
+======================================================
+- Files Created: 
+  - src/modules/constellations/types/constellation.types.ts
+  - src/modules/constellations/store/useConstellationStore.ts
+  - src/modules/constellations/services/ConstellationCatalogService.ts
+  - src/modules/constellations/services/ConstellationVisibilityService.ts
+  - src/modules/constellations/services/ConstellationZenithService.ts
+  - src/modules/constellations/services/ConstellationObservationService.ts
+  - src/modules/constellations/services/ConstellationIntelligenceService.ts
+  - src/modules/constellations/components/ConstellationPanel.tsx
+- Files Modified: 
+  - src/components/ui/ZenithControlCenter.tsx
+  - src/modules/reports/services/SkyRecommendationEngine.ts
+  - src/modules/reports/services/ObservationPlanningService.ts
+  - src/app/page.tsx
+- Visibility model: Calculated Altitude and Azimuth for constellations based on canonical Right Ascension and Declination mapped against Local Sidereal Time derived from the user's coordinates.
+- Zenith proximity model: Determined by absolute difference between Altitude and 90°.
+- Observation scoring model: Base score derived from altitude, constrained by Day/Night state, and directly multiplied by Phase 7C's astronomical weather multiplier.
+- Control Center integration: Successfully added "Constellations" tab adjacent to Planets, featuring best positioned, near zenith, and top observation scores.
+- Validation summary: TypeScript compilation passed with 0 errors. Verified reactivity to activeLocation without setInterval or Cesium hooks.

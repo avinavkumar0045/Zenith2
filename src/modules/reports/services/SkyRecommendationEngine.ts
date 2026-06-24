@@ -5,6 +5,7 @@ import { usePassStore } from '../../pass-predictions/store/usePassStore';
 import { useISSStore } from '../../iss/store/useISSStore';
 import { useSatelliteStore } from '../../satellites/store/useSatelliteStore';
 import { useWeatherStore } from '../../weather/store/useWeatherStore';
+import { useConstellationStore } from '../../constellations/store/useConstellationStore';
 import * as SunCalc from 'suncalc';
 
 export class SkyRecommendationEngineClass {
@@ -13,6 +14,7 @@ export class SkyRecommendationEngineClass {
     const { planets } = usePlanetStore.getState();
     const { moonData } = useMoonStore.getState();
     const { upcomingPasses } = usePassStore.getState();
+    const { bestConstellation } = useConstellationStore.getState();
 
     let bestTarget = null;
     let maxScore = -1;
@@ -25,7 +27,13 @@ export class SkyRecommendationEngineClass {
       }
     });
 
-    // 2. Check ISS / Satellite Passes
+    // 2. Check Constellations
+    if (bestConstellation && bestConstellation.visibilityScore > maxScore) {
+      maxScore = bestConstellation.visibilityScore;
+      bestTarget = { name: bestConstellation.name, reason: `Best positioned constellation.` };
+    }
+
+    // 3. Check ISS / Satellite Passes
     if (upcomingPasses && upcomingPasses.length > 0) {
       const now = Date.now();
       const upcoming = upcomingPasses.filter(p => new Date(p.startTime).getTime() > now && new Date(p.startTime).getTime() - now < 3600000); // within 1 hour
@@ -40,7 +48,7 @@ export class SkyRecommendationEngineClass {
       }
     }
 
-    // 3. Check Moon if nothing else is amazing
+    // 4. Check Moon if nothing else is amazing
     if (maxScore < 8 && moonData?.isVisible && moonData.altitude && moonData.altitude > 20) {
       bestTarget = { name: 'Moon', reason: 'Well positioned and easily observable.' };
     }
@@ -55,6 +63,7 @@ export class SkyRecommendationEngineClass {
     const { upcomingPasses } = usePassStore.getState();
     const { moonData } = useMoonStore.getState();
     const { weather } = useWeatherStore.getState();
+    const { nearZenithConstellation } = useConstellationStore.getState();
     const bestTarget = this.getBestTarget();
 
     if (!activeLocation) return recs;
@@ -82,6 +91,10 @@ export class SkyRecommendationEngineClass {
       }
     }
 
+    if (nearZenithConstellation) {
+      recs.push(`Best constellation currently overhead: ${nearZenithConstellation.name}.`);
+    }
+
     const visiblePlanets = Object.values(planets || {}).filter(p => p.isAboveHorizon);
     if (visiblePlanets.length > 2) {
       recs.push("Multiple planets are visible. Great time for planetary observation.");
@@ -105,6 +118,7 @@ export class SkyRecommendationEngineClass {
     const { activeLocation } = useLocationStore.getState();
     const { upcomingPasses } = usePassStore.getState();
     const { weather } = useWeatherStore.getState();
+    const { visibleConstellations } = useConstellationStore.getState();
 
     if (!activeLocation) return warnings;
 
@@ -130,7 +144,7 @@ export class SkyRecommendationEngineClass {
       warnings.push("No significant satellite passes detected.");
     }
 
-    if (!moonData?.isVisible && visiblePlanets.length === 0 && (!upcomingPasses || upcomingPasses.length === 0)) {
+    if (!moonData?.isVisible && visiblePlanets.length === 0 && (!upcomingPasses || upcomingPasses.length === 0) && visibleConstellations.length === 0) {
       warnings.push("No visible targets available currently.");
     }
 

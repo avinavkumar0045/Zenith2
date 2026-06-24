@@ -3,6 +3,7 @@ import { useMoonStore } from '../../moon/store/useMoonStore';
 import { usePlanetStore } from '../../planets/store/usePlanetStore';
 import { usePassStore } from '../../pass-predictions/store/usePassStore';
 import { useWeatherStore } from '../../weather/store/useWeatherStore';
+import { useConstellationStore } from '../../constellations/store/useConstellationStore';
 import { useObservationPlanningStore } from '../store/useObservationPlanningStore';
 
 import { ObservationWindowEngine } from './ObservationWindowEngine';
@@ -19,6 +20,7 @@ class ObservationPlanningServiceClass {
   private unsubscribePlanet: (() => void) | null = null;
   private unsubscribePass: (() => void) | null = null;
   private unsubscribeWeather: (() => void) | null = null;
+  private unsubscribeConstellation: (() => void) | null = null;
 
   public initialize() {
     this.unsubscribeLocation = useLocationStore.subscribe((state, prevState) => {
@@ -51,6 +53,12 @@ class ObservationPlanningServiceClass {
       }
     });
 
+    this.unsubscribeConstellation = useConstellationStore.subscribe((state, prevState) => {
+      if (state.visibleConstellations !== prevState.visibleConstellations) {
+        this.generatePlan();
+      }
+    });
+
     // Initial generate
     this.generatePlan();
   }
@@ -67,6 +75,7 @@ class ObservationPlanningServiceClass {
     const { planets } = usePlanetStore.getState();
     const { upcomingPasses } = usePassStore.getState();
     const { weather } = useWeatherStore.getState();
+    const { visibleConstellations } = useConstellationStore.getState();
 
     const weatherMult = weather?.scoreMultiplier ?? 1.0;
 
@@ -96,6 +105,23 @@ class ObservationPlanningServiceClass {
           window,
           quality: window ? ObservationQualityEngine.determineQuality(window.peakAltitude, isDaylight, p.isAboveHorizon) : 'Hidden',
           score: p.observationScore * weatherMult
+        });
+      });
+    }
+
+    // Constellations
+    if (visibleConstellations && visibleConstellations.length > 0) {
+      // Add top 3 constellations to agenda to avoid cluttering
+      const topConstellations = [...visibleConstellations].sort((a, b) => b.visibilityScore - a.visibilityScore).slice(0, 3);
+      topConstellations.forEach(c => {
+        const window = ObservationWindowEngine.calculateApproximatedWindow(c.altitude, c.azimuth, true);
+        targets.push({
+          id: `constellation-${c.id}`,
+          name: c.name,
+          type: 'Constellation' as any, // Extends type conceptually
+          window,
+          quality: window ? ObservationQualityEngine.determineQuality(window.peakAltitude, isDaylight, c.isVisible) : 'Hidden',
+          score: c.visibilityScore
         });
       });
     }
@@ -141,6 +167,7 @@ class ObservationPlanningServiceClass {
     if (this.unsubscribePlanet) this.unsubscribePlanet();
     if (this.unsubscribePass) this.unsubscribePass();
     if (this.unsubscribeWeather) this.unsubscribeWeather();
+    if (this.unsubscribeConstellation) this.unsubscribeConstellation();
   }
 }
 
