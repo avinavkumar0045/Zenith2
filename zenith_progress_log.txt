@@ -383,3 +383,47 @@ PHASE 1 COMPLETE.
 - Performance Notes:
   - The SVG dome requires 0 DOM recalculations per frame, preserving absolute layout stability.
   - Engine hooks securely bind to `activeLocation` updates without triggering React hooks loop leaks.
+
+[2026-06-24 23:10:00] PHASE 9A: SPACE SITUATIONAL AWARENESS INTELLIGENCE LAYER
+======================================================
+- Files Created: 
+  - src/modules/ssa/types/ssa.types.ts
+  - src/modules/ssa/store/useSSAStore.ts
+  - src/modules/ssa/services/SpaceActivityEngine.ts
+  - src/modules/ssa/services/OverheadAssetEngine.ts
+  - src/modules/ssa/services/SpaceEnvironmentEngine.ts
+  - src/modules/ssa/services/SSAIntelligenceService.ts
+- Files Modified: 
+  - src/modules/reports/components/CelestialReport.tsx
+  - src/app/page.tsx
+- Architecture Decisions:
+  - Formulated a "Space Activity Index" by synthesizing weather data, passes, and horizon visibility states into a single normalized (0-10) score.
+  - Implemented the `OverheadAssetEngine` to rank disparate assets seamlessly against each other (Planets vs. Moon vs. ISS vs. Constellations).
+  - Maintained zero-polling rule by injecting `SSAIntelligenceService` into the store subscription tree alongside existing location and weather events.
+- Validation Results:
+  - Validated that changing locations (Delhi, London, Sydney, Tokyo, New York) dynamically adjusts the Space Activity Index depending on cloud cover and local passes.
+  - Demonstrated that the Most Relevant Asset dynamically swaps between ISS, Moon, or Planets depending strictly on live trajectory constraints.
+- Performance Notes:
+  - SSA Layer hooks execute securely without firing unoptimized DOM loops. Zero continuous `requestAnimationFrame` render cycles introduced.
+
+[2026-06-24 23:20:00] PHASE 9B: CELESTIAL EVENTS & ALERT INTELLIGENCE ENGINE
+======================================================
+- Files Created: 
+  - src/modules/events/types/event-intelligence.types.ts
+  - src/modules/events/store/useEventStore.ts
+  - src/modules/events/services/EventDetectionEngine.ts
+  - src/modules/events/services/EventRankingEngine.ts
+  - src/modules/events/services/EventSummaryEngine.ts
+  - src/modules/events/services/EventIntelligenceService.ts
+- Files Modified: 
+  - src/modules/reports/components/CelestialReport.tsx
+  - src/app/page.tsx
+- Architecture Decisions:
+  - Built an alert extraction system that converts static metrics (e.g. altitude, upcoming pass timestamp) into transient Event Intelligence Objects.
+  - Formulated a priority ranking engine where short-lived events (e.g., ISS passing in 5 minutes) structurally outrank long-lived environmental conditions (e.g., clear skies or excellent Moon visibility).
+  - Maintained zero-polling rule by injecting EventIntelligenceService directly into the store subscription tree alongside existing events.
+- Validation Results:
+  - Confirmed events populate and swap dynamically across New Delhi, London, Tokyo, Sydney, and New York coordinates based strictly on local timing and geometry.
+  - Weather changes correctly inject or remove weather-related events without triggering infinite render cycles.
+- Performance Notes:
+  - Event alerts are generated inside pure functional array mappings without firing unoptimized DOM loops. Zero continuous `requestAnimationFrame` render cycles introduced.

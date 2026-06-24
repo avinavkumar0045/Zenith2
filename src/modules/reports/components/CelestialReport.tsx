@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useSkyIntelligenceStore } from '../store/useSkyIntelligenceStore';
 import { useSkyCorrelationStore } from '../../sky-correlation/store/useSkyCorrelationStore';
+import { useSSAStore } from '../../ssa/store/useSSAStore';
+import { useEventStore } from '../../events/store/useEventStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Moon, Sun, CloudLightning, Globe2, AlertTriangle, CheckCircle2, Navigation, Activity, ChevronDown, ChevronUp, Radar } from 'lucide-react';
+import { Sparkles, Moon, Sun, CloudLightning, Globe2, AlertTriangle, CheckCircle2, Navigation, Activity, ChevronDown, ChevronUp, Radar, ShieldAlert, BellRing } from 'lucide-react';
 import { useLocationStore } from '../../location/store/useLocationStore';
 import { useWeatherStore } from '../../weather/store/useWeatherStore';
 import { CloudRain } from 'lucide-react';
@@ -10,6 +12,8 @@ import { CloudRain } from 'lucide-react';
 export function CelestialReport() {
   const report = useSkyIntelligenceStore(state => state.report);
   const correlationReport = useSkyCorrelationStore(state => state.report);
+  const ssaReport = useSSAStore(state => state.report);
+  const { topEvent, importantEvents } = useEventStore();
   const activeLocation = useLocationStore(state => state.activeLocation);
   const { weather } = useWeatherStore();
   const [isExpanded, setIsExpanded] = useState(true);
@@ -39,6 +43,75 @@ export function CelestialReport() {
           </div>
         ) : (
           <div className="space-y-4">
+
+            {/* UPCOMING EVENTS (Phase 9B) */}
+            {(topEvent || importantEvents.length > 0) && (
+              <div className="bg-gradient-to-br from-amber-900/30 to-orange-900/30 border border-amber-500/30 rounded-lg p-3">
+                <span className="text-[10px] font-bold text-amber-400 uppercase tracking-widest flex items-center mb-2">
+                  <BellRing className="w-3 h-3 mr-1.5" /> Upcoming Events
+                </span>
+                
+                <div className="space-y-2">
+                  {topEvent && (
+                    <div className="flex items-start bg-amber-500/10 p-2 rounded border border-amber-500/20">
+                      <span className="text-lg mr-2 leading-none">
+                        {topEvent.category === 'ISS' ? '🚀' : topEvent.category === 'MOON' ? '🌙' : topEvent.category === 'PLANET' ? '🪐' : topEvent.category === 'CONSTELLATION' ? '✨' : '🔭'}
+                      </span>
+                      <div>
+                        <span className="text-xs font-bold text-amber-200 block leading-tight">{topEvent.title}</span>
+                        <span className="text-[10px] text-amber-100/70 leading-tight block mt-0.5">{topEvent.description}</span>
+                      </div>
+                    </div>
+                  )}
+
+                  {importantEvents.length > 0 && (
+                    <ul className="space-y-1 mt-2">
+                      {importantEvents.map(event => (
+                        <li key={event.id} className="text-xs text-gray-300 flex items-start">
+                          <span className="mr-1.5 leading-none mt-0.5">
+                            {event.category === 'ISS' ? '🚀' : event.category === 'MOON' ? '🌙' : event.category === 'PLANET' ? '🪐' : event.category === 'CONSTELLATION' ? '✨' : '🔭'}
+                          </span>
+                          <span className="leading-tight">{event.title}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* SPACE ENVIRONMENT (Phase 9A) */}
+            {ssaReport && (
+              <div className="bg-gradient-to-br from-green-900/30 to-emerald-900/30 border border-emerald-500/30 rounded-lg p-3">
+                <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest flex items-center mb-2">
+                  <ShieldAlert className="w-3 h-3 mr-1.5" /> Space Environment
+                </span>
+                
+                <div className="grid grid-cols-2 gap-2 mb-2 border-b border-white/5 pb-2">
+                  <div>
+                    <span className="text-[9px] text-gray-400 uppercase block">Activity Index</span>
+                    <span className="text-sm font-bold text-emerald-300">{ssaReport.spaceActivityIndex.toFixed(1)} / 10</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[9px] text-gray-400 uppercase block">Most Relevant</span>
+                    <span className="text-sm font-bold text-white">{ssaReport.mostRelevantAsset}</span>
+                  </div>
+                </div>
+
+                <div className="mb-2">
+                  <span className="text-[9px] text-gray-400 uppercase block mb-1">Top Objects</span>
+                  <div className="flex flex-wrap gap-1">
+                    {ssaReport.overheadAssets.slice(0, 3).map(asset => (
+                      <span key={asset} className="text-[9px] px-1.5 py-0.5 bg-white/10 rounded border border-white/10 text-gray-200">{asset}</span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="bg-black/20 p-2 rounded border border-white/5">
+                  <p className="text-[11px] text-emerald-100/90 leading-tight italic">"{ssaReport.environmentSummary}"</p>
+                </div>
+              </div>
+            )}
 
             {/* SKY ABOVE THIS LOCATION (Phase 8B) */}
             {correlationReport && (
