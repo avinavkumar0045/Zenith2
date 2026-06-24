@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { useSkyIntelligenceStore } from '../store/useSkyIntelligenceStore';
+import { useSkyCorrelationStore } from '../../sky-correlation/store/useSkyCorrelationStore';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Moon, Sun, CloudLightning, Globe2, AlertTriangle, CheckCircle2, Navigation, Activity, ChevronDown, ChevronUp } from 'lucide-react';
+import { Sparkles, Moon, Sun, CloudLightning, Globe2, AlertTriangle, CheckCircle2, Navigation, Activity, ChevronDown, ChevronUp, Radar } from 'lucide-react';
 import { useLocationStore } from '../../location/store/useLocationStore';
 import { useWeatherStore } from '../../weather/store/useWeatherStore';
 import { CloudRain } from 'lucide-react';
 
 export function CelestialReport() {
   const report = useSkyIntelligenceStore(state => state.report);
+  const correlationReport = useSkyCorrelationStore(state => state.report);
   const activeLocation = useLocationStore(state => state.activeLocation);
   const { weather } = useWeatherStore();
   const [isExpanded, setIsExpanded] = useState(true);
@@ -37,6 +39,35 @@ export function CelestialReport() {
           </div>
         ) : (
           <div className="space-y-4">
+
+            {/* SKY ABOVE THIS LOCATION (Phase 8B) */}
+            {correlationReport && (
+              <div className="bg-gradient-to-br from-indigo-900/40 to-purple-900/40 border border-indigo-500/30 rounded-lg p-3">
+                <span className="text-[10px] font-bold text-indigo-300 uppercase tracking-widest flex items-center mb-2">
+                  <Radar className="w-3 h-3 mr-1.5" /> Sky Above This Location
+                </span>
+                
+                <div className="grid grid-cols-2 gap-2 mb-2 border-b border-white/5 pb-2">
+                  <div>
+                    <span className="text-[9px] text-gray-400 uppercase block">Best Target</span>
+                    <span className="text-sm font-bold text-white">{correlationReport.bestTarget}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="text-[9px] text-gray-400 uppercase block">Direction</span>
+                    <span className="text-sm font-bold text-indigo-200">{correlationReport.bestDirection}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-1">
+                  {correlationReport.skySummary.map((stmt, idx) => (
+                    <div key={idx} className="flex items-start">
+                      <span className="text-indigo-400 mr-1.5 mt-0.5 text-[10px]">■</span>
+                      <p className="text-[11px] text-gray-200 leading-tight">{stmt}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
             
             {/* Observation Score */}
             <div className="bg-white/5 rounded-lg p-3 border border-white/10">

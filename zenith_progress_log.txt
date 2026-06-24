@@ -334,3 +334,27 @@ PHASE 1 COMPLETE.
 - Observation scoring model: Base score derived from altitude, constrained by Day/Night state, and directly multiplied by Phase 7C's astronomical weather multiplier.
 - Control Center integration: Successfully added "Constellations" tab adjacent to Planets, featuring best positioned, near zenith, and top observation scores.
 - Validation summary: TypeScript compilation passed with 0 errors. Verified reactivity to activeLocation without setInterval or Cesium hooks.
+
+[2026-06-24 22:30:00] PHASE 8B: SKY OBJECT CORRELATION ENGINE
+======================================================
+- Files Created: 
+  - src/modules/sky-correlation/types/sky-correlation.types.ts
+  - src/modules/sky-correlation/store/useSkyCorrelationStore.ts
+  - src/modules/sky-correlation/services/SkyDirectionEngine.ts
+  - src/modules/sky-correlation/services/OverheadObjectEngine.ts
+  - src/modules/sky-correlation/services/VisibilitySummaryEngine.ts
+  - src/modules/sky-correlation/services/SkyCorrelationService.ts
+- Files Modified: 
+  - src/modules/reports/components/CelestialReport.tsx
+  - src/app/page.tsx
+- Architecture Decisions:
+  - Created a centralized correlation engine that aggregates intelligence across Moon, Planets, Constellations, Satellites, ISS, and Weather modules.
+  - Direction engine maps 360-degree Azimuth to cardinal/ordinal compass points.
+  - Zero-polling maintained; SkyCorrelationService solely listens to Zustand state changes.
+  - UI strictly adheres to existing Zenith styling; injected correlation summary quietly within `CelestialReport.tsx` without expanding layout footprints or inventing new tabs.
+- Validation Results:
+  - Validated New Delhi, Sydney, London, New York, Tokyo coordinates successfully.
+  - Verified Moon/Planet/Constellation observability toggles correctly.
+  - Direction outputs correctly align with selected celestial target azimuths.
+- Performance Notes:
+  - Zustand subscription tree cleanly isolates the orchestration without adding any overhead to the React render-loop or Cesium engine.
