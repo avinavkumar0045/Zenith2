@@ -13,6 +13,7 @@ import OrbitPanel from '@/modules/orbits/components/OrbitPanel';
 import OrbitLegend from '@/modules/orbits/components/OrbitLegend';
 import OrbitTimeline from '@/modules/orbits/components/OrbitTimeline';
 import ZenithControlCenter from '@/components/ui/ZenithControlCenter';
+import { CommandIsland } from '@/components/ui/command-island/CommandIsland';
 import { PassPredictionService } from '@/modules/pass-predictions/services/PassPredictionService';
 import { CelestialReport } from '@/modules/reports/components/CelestialReport';
 import { SkyIntelligenceService } from '@/modules/reports/services/SkyIntelligenceService';
@@ -152,7 +153,7 @@ function AppOverlay() {
       <div 
         className="absolute inset-0 z-10 pointer-events-none select-none overflow-hidden"
         style={{
-          background: 'radial-gradient(circle at center, transparent 35%, rgba(34, 211, 238, 0.02) 60%, rgba(34, 211, 238, 0.06) 80%, rgba(0,0,0,0.55) 100%)'
+          background: 'radial-gradient(circle at center, rgba(6, 182, 212, 0.02) 0%, rgba(6, 182, 212, 0.06) 45%, rgba(13, 148, 136, 0.01) 65%, rgba(0, 0, 0, 0.72) 100%)'
         }}
       />
 
@@ -186,61 +187,15 @@ function AppOverlay() {
         isTransitioning ? "opacity-0 scale-95" : "opacity-100 scale-100"
       )}>
         
-        {/* Zenith Command Island (Merged Single Capsule) */}
-        <div className="w-full flex justify-center pointer-events-auto z-20">
-          <div className="glass-capsule-heavy h-12 w-full max-w-xs sm:max-w-md md:max-w-xl flex items-center justify-between px-3 md:px-4 text-[10px] md:text-xs text-white/50 font-mono tracking-widest uppercase rounded-full select-none gap-2">
-            {/* 1. Brand Identity */}
-            <div className="flex items-center gap-1.5 pl-1.5 flex-shrink-0">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-              </span>
-              <span className="font-sans font-semibold text-white tracking-[0.25em] text-[11px] md:text-[12px] hover:text-cyan-400 transition-colors duration-200 cursor-default">ZENITH</span>
-            </div>
-
-            <div className="w-px h-4 bg-white/10 flex-shrink-0" />
-
-            {/* 2. Current Location */}
-            <div className="flex items-center gap-1.5 text-white/80 max-w-[80px] sm:max-w-[130px] md:max-w-[170px] truncate flex-shrink-0">
-              <MapPin className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
-              {activeLocation ? (
-                <div className="flex items-center gap-1 truncate font-sans">
-                  <span className="font-medium truncate text-[10px] md:text-[11px] text-white/95">{activeLocation.name}</span>
-                  {activeLocation.dayState.toLowerCase().includes('night') ? (
-                    <Moon className="w-3 h-3 text-indigo-400 flex-shrink-0" />
-                  ) : (
-                    <Sun className="w-3 h-3 text-yellow-400 flex-shrink-0" />
-                  )}
-                </div>
-              ) : (
-                <span className="text-[9px] md:text-[10px] text-white/30 tracking-wider font-sans">GLOBAL ORBIT</span>
-              )}
-            </div>
-
-            <div className="w-px h-4 bg-white/10 flex-shrink-0" />
-
-            {/* 3. Search Trigger (Primary CTA - Sleek Input Shell style) */}
-            <div className="flex-1 max-w-[120px] sm:max-w-[160px] md:max-w-[200px] flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/10 border border-white/10 hover:bg-white/15 hover:border-white/20 text-white/50 hover:text-white/80 transition-all duration-[150ms] cursor-pointer shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]">
-              <Search className="w-3.5 h-3.5 text-cyan-400 flex-shrink-0" />
-              <span className="text-[9px] md:text-[10px] font-sans font-normal tracking-wide text-left select-none text-white/40 truncate">Search location...</span>
-            </div>
-
-            <div className="w-px h-4 bg-white/10 flex-shrink-0" />
-
-            {/* 4. System Status */}
-            <div className="flex items-center gap-1.5 pr-1 flex-shrink-0">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse"></span>
-              <span className="text-[8px] md:text-[9px] text-emerald-400/90 font-bold tracking-widest">SYS_READY</span>
-            </div>
-          </div>
-        </div>
+        {/* Zenith Command Island */}
+        <CommandIsland />
 
         {/* Center Space: Earth Safe Zone (Interaction Center) */}
         <div className="flex-1 w-full pointer-events-none" />
 
         {/* Floating Bottom Dock Area: Workspace Selector */}
         <div className="w-full flex justify-center pointer-events-auto z-20 mb-6 sm:mb-8">
-          <div className="glass-capsule-heavy h-12 p-1 w-full max-w-[280px] sm:max-w-md md:max-w-lg flex items-center justify-around rounded-full select-none relative">
+          <div className="glass-capsule-dock h-12 p-1 w-full max-w-[280px] sm:max-w-md md:max-w-lg flex items-center justify-around rounded-full select-none relative">
             {workspaces.map((ws) => {
               const Icon = ws.icon;
               const isActive = activeWorkspace === ws.id;
@@ -250,20 +205,20 @@ function AppOverlay() {
                   onClick={() => setActiveWorkspace(ws.id)}
                   className={clsx(
                     "relative flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-4 rounded-full text-xs font-sans tracking-widest uppercase transition-colors duration-[250ms] flex-1 cursor-pointer hover:scale-105 active:scale-95 group",
-                    isActive ? "text-white font-semibold" : "text-white/40 hover:text-white/80"
+                    isActive ? "text-white font-bold" : "text-slate-300 hover:text-white"
                   )}
                 >
                   {/* Sliding glass capsule background */}
                   {isActive && (
                     <motion.div
                       layoutId="activeWorkspacePill"
-                      className="absolute inset-0 bg-white/10 border border-white/15 rounded-full -z-10 shadow-[0_4px_12px_rgba(6,182,212,0.15),inset_0_1px_1px_rgba(255,255,255,0.1)]"
+                      className="absolute inset-0 bg-white/20 border border-white/30 rounded-full -z-10 shadow-[0_0_12px_rgba(34,211,238,0.3),inset_0_1px_1px_rgba(255,255,255,0.2)]"
                       transition={{ type: "spring", stiffness: 380, damping: 30 }}
                     />
                   )}
                   <Icon className={clsx(
                     "w-4 h-4 transition-all duration-[150ms] group-hover:scale-110",
-                    isActive ? "text-cyan-400 drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]" : "text-white/40 group-hover:text-cyan-300"
+                    isActive ? "text-cyan-300 drop-shadow-[0_0_8px_rgba(34,211,238,0.8)] scale-105" : "text-slate-400 group-hover:text-cyan-300"
                   )} />
                   <span className="hidden sm:inline text-[9px] md:text-[10px] tracking-wider">{ws.label}</span>
                 </button>
