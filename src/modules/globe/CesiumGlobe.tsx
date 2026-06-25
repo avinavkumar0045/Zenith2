@@ -15,6 +15,9 @@ import { ISSService } from '../iss/services/ISSService';
 
 import { MoonGroundLayer } from '../moon/layers/MoonGroundLayer';
 import { PlanetGroundLayer } from '../planets/layers/PlanetGroundLayer';
+import { getEntityPriority } from './resolvers/PriorityResolver';
+import { resolveLabelCollisions } from './resolvers/CollisionResolver';
+import { useSatelliteStore } from '../satellites/store/useSatelliteStore';
 
 export default function CesiumGlobe() {
   const cesiumContainer = useRef<HTMLDivElement>(null);
@@ -92,9 +95,89 @@ export default function CesiumGlobe() {
       LayerManager.updateAll(time);
     });
 
+    // Implement zoom-based label visibility (Far, Medium, Close) and collision resolution
+    const updateLabelVisibility = () => {
+      const height = viewer.camera.positionCartographic.height;
+      const scene = viewer.scene;
+      const julianDate = Cesium.JulianDate.now();
+      const activeSatellites = useSatelliteStore.getState().activeSatellites;
+
+      const entitiesWithLabels: Cesium.Entity[] = [];
+
+      // 1. Gather labels from viewer's direct entities (like planets and moon)
+      viewer.entities.values.forEach((entity) => {
+        if (entity.label) {
+          entitiesWithLabels.push(entity);
+        }
+      });
+
+      // 2. Gather labels from dataSources
+      const dataSources = viewer.dataSources;
+      for (let i = 0; i < dataSources.length; i++) {
+        const ds = dataSources.get(i);
+        ds.entities.values.forEach((entity) => {
+          if (entity.label) {
+            entitiesWithLabels.push(entity);
+          }
+        });
+      }
+
+      // 3. Assign base zoom-level visibility rules using getEntityPriority
+      entitiesWithLabels.forEach((entity) => {
+        const priority = getEntityPriority(entity, activeSatellites);
+        let showLabel = true;
+
+        if (height > 6000000) {
+          // Far Zoom: Show only entities with priority >= 85 (Location, ISS, Moon, Planets)
+          showLabel = priority >= 85;
+        } else if (height > 2000000) {
+          // Medium Zoom: Show entities with priority >= 70 (Adds Space Stations, Weather Satellites)
+          showLabel = priority >= 70;
+        } else {
+          // Close Zoom: Show all entities with priority >= 40 (Adds Navigation, Comm, Others)
+          showLabel = priority >= 40;
+        }
+
+        // Tag entity with its base zoom status and priority
+        (entity as any)._zoomShowLabel = showLabel;
+        (entity as any)._priority = priority;
+      });
+
+      // 4. Sort by priority descending (highest priority first)
+      const sortedEntities = [...entitiesWithLabels].sort((a, b) => {
+        const prioA = (a as any)._priority || 0;
+        const prioB = (b as any)._priority || 0;
+        return prioB - prioA;
+      });
+
+      // 5. Run screen-space collision checks and mutate visibility
+      resolveLabelCollisions(sortedEntities, scene, julianDate);
+    };
+
+    viewer.camera.percentageChanged = 0.05;
+    const removeCameraChanged = viewer.camera.changed.addEventListener(updateLabelVisibility);
+
+    // Throttled postRender updates at 100ms (10Hz) to update labels continuously during smooth motion
+    let lastRenderUpdate = 0;
+    const removePostRender = viewer.scene.postRender.addEventListener(() => {
+      const now = Date.now();
+      if (now - lastRenderUpdate > 100) {
+        updateLabelVisibility();
+        lastRenderUpdate = now;
+      }
+    });
+
+    // Trigger an initial layout calculation after Cesium completes loading data
+    const initialTimer = setTimeout(() => {
+      updateLabelVisibility();
+    }, 500);
+
     setGlobeReady(true);
 
     return () => {
+      clearTimeout(initialTimer);
+      removePostRender();
+      removeCameraChanged();
       removePreUpdateEvent();
       LayerManager.destroyAll();
       GlobeService.destroy();

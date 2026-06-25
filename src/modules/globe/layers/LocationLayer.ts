@@ -31,11 +31,15 @@ export class LocationLayer extends BaseLayer {
           name: location.name,
           latitude: location.latitude,
           longitude: location.longitude,
-          color: '#3b82f6', // Zenith Accent Blue
-          size: 12
+          color: '#22d3ee', // Signature Neon Cyan
+          size: 8
         };
 
         const entityOptions = MarkerService.createGenericMarker(markerOptions);
+        if (entityOptions.point) {
+          entityOptions.point.outlineColor = Cesium.Color.fromCssColorString('rgba(34, 211, 238, 0.35)') as any;
+          entityOptions.point.outlineWidth = 5 as any;
+        }
         this.dataSource.entities.add(entityOptions);
         this.currentMarkerId = markerOptions.id;
         
@@ -55,7 +59,23 @@ export class LocationLayer extends BaseLayer {
     this.dataSource.show = false;
   }
 
-  protected onUpdate(time?: any): void {}
+  protected onUpdate(time?: any): void {
+    if (this.currentMarkerId) {
+      const entity = this.dataSource.entities.getById(this.currentMarkerId);
+      if (entity && entity.point) {
+        const prefersReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReducedMotion) {
+          entity.point.outlineWidth = 4 as any;
+          entity.point.pixelSize = 8 as any;
+        } else {
+          // Solid 8px core, oscillate outline (pulsing halo/ripple) between 3px and 11px
+          const osc = Math.sin(Date.now() * 0.004) * 4 + 7;
+          entity.point.outlineWidth = osc as any;
+          entity.point.pixelSize = 8 as any;
+        }
+      }
+    }
+  }
 
   public destroy(): void {
     if (this.unsubscribe) {

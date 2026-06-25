@@ -16,7 +16,7 @@ export class CelesTrakProvider implements SatelliteProvider {
       const text = await response.text();
       return this.parseTLEText(text, category);
     } catch (error) {
-      console.error("CelesTrak Fetch Error:", error);
+      console.warn("CelesTrak Fetch failed:", error instanceof Error ? error.message : error);
       return [];
     }
   }

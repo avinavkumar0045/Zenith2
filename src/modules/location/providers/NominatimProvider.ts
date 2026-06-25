@@ -29,7 +29,7 @@ export class NominatimProvider {
         source: 'Nominatim'
       }));
     } catch (error) {
-      console.error("Nominatim Search Error", error);
+      console.warn("Nominatim Search Geocoding failed:", error instanceof Error ? error.message : error);
       return [];
     }
   }
@@ -55,7 +55,7 @@ export class NominatimProvider {
         source: 'Nominatim'
       };
     } catch (error) {
-      console.error("Nominatim Reverse Error", error);
+      console.warn("Nominatim Reverse Geocoding failed:", error instanceof Error ? error.message : error);
       return null;
     }
   }

@@ -44,7 +44,7 @@ class WeatherServiceClass {
       const astronomicalWeather = ObservationConditionsEngine.evaluateConditions(lat, lon, raw);
       store.setWeather(astronomicalWeather);
     } catch (err: any) {
-      console.error("Failed to fetch weather:", err);
+      console.warn("Failed to fetch weather:", err instanceof Error ? err.message : err);
       store.setError(err.message || 'Unknown weather error');
     } finally {
       store.setLoading(false);

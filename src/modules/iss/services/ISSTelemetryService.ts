@@ -21,7 +21,7 @@ class ISSTelemetryServiceClass {
       
       return null;
     } catch (e) {
-      console.error("Failed to fetch ISS telemetry", e);
+      console.warn("Failed to fetch ISS telemetry:", e instanceof Error ? e.message : e);
       return null;
     }
   }
