@@ -13,7 +13,7 @@ export default function LandingNav() {
       <div className="flex items-center gap-3">
         <Globe2 className="w-6 h-6 text-blue-400" />
         <Link href="/" className="font-bold tracking-widest text-white uppercase hover:text-blue-400 transition-colors">
-          Project Zenith
+          Zenith
         </Link>
       </div>
 

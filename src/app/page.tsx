@@ -5,19 +5,24 @@ import Link from 'next/link';
 import LandingNav from '@/components/ui/LandingNav';
 import { ChevronRight, Globe2, Sparkles, Navigation, Radar, Compass, CloudLightning, CircleDot, Radio } from 'lucide-react';
 import clsx from 'clsx';
-import SpaceBackground from '@/components/landing/background/SpaceBackground';
+import { CosmicParallaxBg } from '@/components/ui/parallax-cosmic-background';
 
 export default function LandingPage() {
   return (
     <main className="relative min-h-screen bg-transparent overflow-x-hidden text-white selection:bg-blue-500/30">
       <LandingNav />
       
-      {/* Cinematic Parallax Space Background */}
-      <SpaceBackground />
+      {/* Test Cosmic Parallax Background */}
+      <CosmicParallaxBg 
+        head="" 
+        text="" 
+        loop={true}
+        className="fixed inset-0 z-0 pointer-events-none"
+      />
 
       <div className="relative z-10">
         {/* HERO SECTION */}
-        <section className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-20 text-center overflow-hidden">
+        <section className="relative min-h-[100svh] flex flex-col items-center justify-center px-4 pt-20 text-center overflow-hidden">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -29,12 +34,12 @@ export default function LandingPage() {
               <span>Real-Time Celestial Intelligence</span>
             </div>
             
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter mb-6 bg-gradient-to-br from-white via-blue-100 to-blue-900 bg-clip-text text-transparent">
-              PROJECT ZENITH
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black tracking-[0.2em] mb-6 bg-gradient-to-br from-white via-blue-100 to-blue-900 bg-clip-text text-transparent">
+              ZENITH
             </h1>
             
-            <p className="text-lg md:text-2xl text-gray-400 mb-12 max-w-2xl font-light">
-              The premier Space Situational Awareness platform. Discover, observe, and predict everything above any point on Earth.
+            <p className="text-lg md:text-2xl text-gray-400 mb-12 max-w-2xl font-light tracking-[0.3em] uppercase">
+              Discover • Track • Predict
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto">
@@ -64,7 +69,7 @@ export default function LandingPage() {
           >
             <h2 className="text-3xl md:text-5xl font-bold mb-6">Unprecedented Orbital Visibility</h2>
             <p className="text-xl text-gray-400 leading-relaxed">
-              Project Zenith brings satellite tracking, celestial positioning, space weather intelligence, and observation planning into a single unified 3D platform. Engineered for astronomy, education, and Space Situational Awareness.
+              Zenith brings satellite tracking, celestial positioning, space weather intelligence, and observation planning into a single unified 3D platform. Engineered for astronomy, education, and Space Situational Awareness.
             </p>
           </motion.div>
         </section>
