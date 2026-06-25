@@ -30,6 +30,7 @@ export function CelestialReport() {
   const [forecastQuality, setForecastQuality] = useState(_forecastQuality);
   const [forecastSummary, setForecastSummary] = useState(_forecastSummary);
   const [weather, setWeather] = useState(_weather);
+  const [isMobileExpanded, setIsMobileExpanded] = useState(false);
 
   useEffect(() => { if (_report) setReport(_report); }, [_report]);
   useEffect(() => { if (_correlationReport) setCorrelationReport(_correlationReport); }, [_correlationReport]);
@@ -124,12 +125,29 @@ export function CelestialReport() {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: 20 }}
-        className="bg-black/60 border border-white/10 backdrop-blur-xl rounded-2xl shadow-2xl pointer-events-auto flex flex-col relative max-h-full min-h-0 shrink"
+        className={clsx(
+          "bg-black/60 border border-white/10 backdrop-blur-xl shadow-2xl pointer-events-auto flex flex-col shrink transition-transform duration-300",
+          isMobile 
+            ? "fixed inset-x-0 bottom-16 z-50 rounded-t-3xl max-h-[75vh]" 
+            : "relative rounded-2xl max-h-full min-h-0",
+          isMobile && !isMobileExpanded && "translate-y-[calc(100%-60px)]"
+        )}
         style={{ 
           width: isMobile ? '100%' : `${width}px`,
           userSelect: isResizing ? 'none' : 'auto' 
         }}
       >
+        {isMobile && (
+          <div 
+            className="w-full h-10 flex items-center justify-center cursor-pointer shrink-0 border-b border-white/5 active:bg-white/5 rounded-t-3xl"
+            onClick={() => setIsMobileExpanded(!isMobileExpanded)}
+          >
+            <div className="w-12 h-1.5 bg-white/30 rounded-full" />
+            <span className="absolute left-4 text-xs font-bold text-gray-400 uppercase tracking-widest">
+              Sky Report
+            </span>
+          </div>
+        )}
         {!isMobile && (
           <div 
             className="absolute top-0 right-0 w-3 h-full cursor-col-resize hover:bg-white/5 active:bg-white/10 transition-colors z-20 flex items-center justify-center opacity-0 hover:opacity-100 group"

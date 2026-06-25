@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SatellitePanel from '@/modules/satellites/components/SatellitePanel';
 import { ISSPanel } from '@/modules/iss/components/ISSPanel';
 import { PassPanel } from '@/modules/pass-predictions/components/PassPanel';
@@ -19,6 +19,16 @@ type Tab = 'satellites' | 'iss' | 'passes' | 'moon' | 'planets' | 'constellation
 export default function ZenithControlCenter() {
   const [activeTab, setActiveTab] = useState<Tab | null>('satellites');
   const selectedSatellite = useSatelliteStore(state => state.selectedSatellite);
+  
+  const [isMobile, setIsMobile] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode; disabled?: boolean }[] = [
     { id: 'satellites', label: 'Satellites', icon: <Radio className="w-5 h-5" /> },
@@ -46,10 +56,44 @@ export default function ZenithControlCenter() {
   };
 
   return (
-    <div className="w-full max-w-sm pointer-events-auto flex flex-col gap-3 max-h-[85vh] overflow-y-auto custom-scrollbar pr-2 pb-20">
-      <div className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">
-        Control Center Modules
-      </div>
+    <>
+      {isMobile && (
+        <button 
+          onClick={() => setIsMobileOpen(true)}
+          className="fixed bottom-4 right-4 z-50 bg-blue-600/80 backdrop-blur-md text-white p-4 rounded-full shadow-lg border border-white/20 pointer-events-auto"
+        >
+          <Radar className="w-6 h-6" />
+        </button>
+      )}
+
+      {isMobile && isMobileOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] pointer-events-auto"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
+
+      <div className={clsx(
+        "w-full pointer-events-auto flex flex-col gap-3 custom-scrollbar transition-transform duration-300",
+        isMobile 
+          ? "fixed inset-x-0 bottom-0 z-[70] bg-black/90 backdrop-blur-2xl p-4 rounded-t-3xl border-t border-white/10 max-h-[85vh] overflow-y-auto transform"
+          : "max-w-sm max-h-[85vh] overflow-y-auto pr-2 pb-20",
+        isMobile && !isMobileOpen ? "translate-y-full" : "translate-y-0"
+      )}>
+        {isMobile && (
+          <div className="flex justify-between items-center mb-2 px-1">
+            <span className="text-sm font-bold text-white uppercase tracking-widest">Control Center</span>
+            <button onClick={() => setIsMobileOpen(false)} className="p-2 text-gray-400 hover:text-white bg-white/5 rounded-full">
+              <ChevronDown className="w-5 h-5" />
+            </button>
+          </div>
+        )}
+
+        {!isMobile && (
+          <div className="text-xs font-bold text-gray-400 uppercase tracking-widest px-1">
+            Control Center Modules
+          </div>
+        )}
       
       {tabs.map(tab => {
         const isActive = activeTab === tab.id;
@@ -101,5 +145,6 @@ export default function ZenithControlCenter() {
         );
       })}
     </div>
+    </>
   );
 }

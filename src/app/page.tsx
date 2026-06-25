@@ -97,9 +97,9 @@ function AppOverlay() {
         </div>
 
         {/* Floating Components Area */}
-        <div className="flex-1 w-full min-h-0 flex flex-col md:flex-row items-stretch justify-between pb-4 md:pb-0 gap-4 mt-auto md:mt-0 pointer-events-none">
+        <div className="flex-1 w-full min-h-0 flex flex-col lg:flex-row items-stretch justify-between pb-4 lg:pb-0 gap-4 mt-auto lg:mt-0 pointer-events-none">
           {/* Left side panels: Location + Orbit + Reports */}
-          <div className="flex flex-col gap-4 items-start w-full md:w-auto h-full min-h-0 pointer-events-auto pr-2 pb-20">
+          <div className="flex flex-col gap-4 items-start w-full lg:w-[400px] xl:w-auto h-full min-h-0 pointer-events-auto pr-2 pb-20 lg:pb-4">
             {/* <RecentLocations /> */}
             <div className="flex-none w-full">
               <LocationCard />
@@ -118,7 +118,7 @@ function AppOverlay() {
 
           
           {/* Right side panels: Zenith Control Center */}
-          <div className="flex flex-col justify-end gap-4 items-end w-full md:w-96 pointer-events-none h-full">
+          <div className="flex flex-col justify-end gap-4 items-end w-full lg:w-[350px] xl:w-96 pointer-events-none h-full">
             <SatelliteDetails />
             <ZenithControlCenter />
           </div>
