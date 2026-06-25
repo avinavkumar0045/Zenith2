@@ -462,3 +462,54 @@ PHASE 1 COMPLETE.
   - ISSUE #3: Decommissioned horizontal module tabs spanning the right panel. Engineered a vertical stacked-accordion module launcher adhering strictly to single-open principles, maintaining glassmorphism bounds and aria accessibility standards.
 - Validation:
   - TypeScript checked (0 Errors). No architectural astronomy logic or Celestial Rendering rules were compromised.
+
+[2026-06-25 00:20:00] PHASE UI-2: UNIFIED SKY REPORT SCROLLING & RESIZABLE WIDTH
+======================================================
+- Files Modified: 
+  - src/app/page.tsx (removed rigid md:w-96 constraint)
+  - src/modules/reports/components/CelestialReport.tsx
+- UX Adjustments:
+  - ISSUE #1: Engineered an internal scrolling container mechanism. The report header retains its position while the complex intelligence logic smoothly scrolls internally under `overflow-y-auto`. Max height is constrained dynamically via `max-h-[85vh]` ensuring it never clips beneath the viewport.
+  - ISSUE #2: Implemented a robust `onMouseMove` custom hook architecture directly into the report layer. The panel is flawlessly drag-resizable horizontally from a min of 280px to a max of 600px without generating React remount flicker or touching the Cesium loop.
+  - Added seamless LocalStorage hook (`zenith-report-width`) guaranteeing the user's preferred layout persists safely across hard refreshes.
+  - Integrated mobile-responsive rules mapping the resize listener to disable touch drags actively on small screens, gracefully degrading back to 100% width.
+- Validation:
+  - TypeScript checked (0 Errors). Glassmorphism preserved. Cesium rendering unaffected.
+
+[2026-06-25 01:00:00] PHASE UI-3: Unified Sky Report UX Stability & Adaptive Layout Refinement
+======================================================
+- Files Modified: 
+  - src/modules/reports/components/CelestialReport.tsx
+- UX Adjustments:
+  - ISSUE 1: Fixed Scroll Persistence Jump. 
+    - Analyzed the root cause: React `AnimatePresence` drops state without specific component keys, and background Zustand stores evaluating asynchronously would temporarily return `undefined` objects during updates, causing the `overflow-y-auto` container to height-collapse and lose the user's `scrollTop`.
+    - Implemented a Local Component Caching pattern (`useState` synchronizing with store only when valid values emit). This completely eliminates DOM unmounting and preserves the scroll position seamlessly.
+    - Added explicitly bound React `key` props to `motion.div` to enforce structural DOM persistence.
+  - ISSUE 2: Implemented Native Adaptive Breakpoints.
+    - Constructed `clsx` tailwind logic branching based on internal component `width` state.
+    - Compact Mode (<320px): `text-[9px]`, reduced padding to `p-2`/`p-3`.
+    - Standard Mode (<450px): Base styles mapped directly.
+    - Comfort Mode (>=450px): Increased font tracking, paddings (`p-5`/`p-6`), headers upscaled to `text-xl`/`text-4xl`, icon sizes enlarged.
+    - Smart Layout Reflow: Implemented `grid-cols-2` and `grid-cols-4` intelligently allocating space (e.g. side-by-side Observation Score and Best Target).
+- Validation:
+  - Scroll position does not reset randomly during 1-second interval engine updates.
+  - Typography scales naturally while resizing via drag handle.
+  - 0 TypeScript errors. No Cesium engine impact.
+
+[2026-06-25 01:30:00] PHASE UI-4: Unified Sky Report Layout & Responsive Container Fix
+======================================================
+- Files Modified: 
+  - src/app/page.tsx
+  - src/modules/reports/components/CelestialReport.tsx
+- UX Adjustments:
+  - ISSUE 1-3 (Container Architecture & Flexbox Fix):
+    - Removed `items-end` from the main `page.tsx` Floating Components Area which was incorrectly causing all panels to wrap and shrink to content height without bounds. 
+    - Replaced with `items-stretch` and implemented a proper Flex Column (`h-full min-h-0 flex-col`) for the left sidebar.
+    - Updated `CelestialReport` container to `flex-1 min-h-0`, enforcing that it only consumes the remaining viewport space. 
+    - Changed `CelestialReport.tsx` internal wrapper class from an arbitrary `max-h-[85vh]` hack to pure CSS `max-h-full min-h-0 shrink`. This seamlessly enforces that the report never pushes content offscreen, triggering the internal `overflow-y-auto` perfectly as per VS Code / grafana dashboard specifications.
+  - ISSUE 4-6 (Grid Reflow & Cards Stretching):
+    - Ensured the Phase UI-3 grid architecture remains intact so cards successfully reflow into `grid-cols-2` and `grid-cols-4` patterns when width expands, eliminating the "very tall vertical stack" problem.
+- Validation:
+  - Flexbox container now accurately binds the report to viewport constraints.
+  - 0 TypeScript errors.
+  - No engine modifications. No styling/aesthetic deviations.

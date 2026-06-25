@@ -97,20 +97,28 @@ function AppOverlay() {
         </div>
 
         {/* Floating Components Area */}
-        <div className="flex-1 w-full min-h-0 flex flex-col md:flex-row items-end justify-between pb-4 md:pb-0 gap-4 mt-auto md:mt-0 pointer-events-none">
+        <div className="flex-1 w-full min-h-0 flex flex-col md:flex-row items-stretch justify-between pb-4 md:pb-0 gap-4 mt-auto md:mt-0 pointer-events-none">
           {/* Left side panels: Location + Orbit + Reports */}
-          <div className="flex flex-col gap-4 items-start w-full md:w-96 max-h-full overflow-y-auto custom-scrollbar pointer-events-auto pr-2 pb-20">
+          <div className="flex flex-col gap-4 items-start w-full md:w-auto h-full min-h-0 pointer-events-auto pr-2 pb-20">
             {/* <RecentLocations /> */}
-            <LocationCard />
-            <CelestialReport />
+            <div className="flex-none w-full">
+              <LocationCard />
+            </div>
+            
+            <div className="flex-1 min-h-0 w-full flex flex-col">
+              <CelestialReport />
+            </div>
+
             {/* Phase 3A: Orbit Visualization Controls */}
-            <OrbitPanel />
-            <OrbitLegend />
+            <div className="flex-none w-full flex flex-col gap-4">
+              <OrbitPanel />
+              <OrbitLegend />
+            </div>
           </div>
 
           
           {/* Right side panels: Zenith Control Center */}
-          <div className="flex flex-col gap-4 items-end w-full md:w-96 pointer-events-none">
+          <div className="flex flex-col justify-end gap-4 items-end w-full md:w-96 pointer-events-none h-full">
             <SatelliteDetails />
             <ZenithControlCenter />
           </div>
