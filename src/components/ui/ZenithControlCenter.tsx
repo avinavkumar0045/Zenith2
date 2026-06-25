@@ -89,7 +89,7 @@ export default function ZenithControlCenter() {
                   animate={{ height: 'auto', opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
                   transition={{ duration: 0.3, ease: 'easeInOut' }}
-                  className="overflow-hidden border-t border-white/10"
+                  className="border-t border-white/10 max-h-[380px] overflow-y-auto custom-scrollbar"
                 >
                   <div className="p-4">
                     {renderTabContent(tab.id)}
