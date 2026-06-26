@@ -1,4 +1,4 @@
-# Project Zenith Conventions
+# Zenith Conventions
 
 ## 1. Directory Structure
 

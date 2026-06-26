@@ -1,7 +1,7 @@
 <div align="center">
-  <h1>PROJECT ZENITH</h1>
+  <h1>ZENITH</h1>
   <p><strong>"Observe. Understand. Anticipate Space."</strong></p>
-  <p>Project Zenith is an advanced Space Situational Awareness platform built with Next.js and CesiumJS that enables users to explore satellites, planets, celestial bodies, weather conditions, orbital predictions, and observation opportunities from any location on Earth.</p>
+  <p>Zenith is an advanced Space Situational Awareness platform built with Next.js and CesiumJS that enables users to explore satellites, planets, celestial bodies, weather conditions, orbital predictions, and observation opportunities from any location on Earth.</p>
 
   <!-- Badges -->
   <p>
@@ -115,7 +115,7 @@ src/
 
 ## 🚀 Installation & Setup
 
-Project Zenith requires **Node.js (v18+)** and **npm (v9+)**.
+Zenith requires **Node.js (v18+)** and **npm (v9+)**.
 
 1. **Clone the repository**
    ```bash
@@ -211,7 +211,7 @@ From the live production dashboard, users can currently:
 
 ## 📈 Performance Optimizations
 
-Project Zenith is aggressively optimized for modern web performance:
+Zenith is aggressively optimized for modern web performance:
 * **Next.js App Router:** Leverages React Server Components for minimal client payloads.
 * **Code Splitting & Lazy Loading:** Heavy components and charts are dynamically imported only when needed.
 * **Dynamic Imports:** The entire CesiumJS engine is loaded asynchronously to prevent blocking the initial page render.
@@ -223,7 +223,7 @@ Project Zenith is aggressively optimized for modern web performance:
 
 ## 🌐 Deployment
 
-Project Zenith is continuously deployed and optimized for edge delivery.
+Zenith is continuously deployed and optimized for edge delivery.
 
 * **Platform:** [Vercel](https://vercel.com)
 * **Pipeline:** Automated CI/CD via GitHub.
@@ -244,7 +244,7 @@ While highly capable, the current version has some limitations to be aware of:
 
 ## 🤝 Contributing
 
-Contributions are welcome! If you'd like to improve Project Zenith, please follow standard open-source workflow:
+Contributions are welcome! If you'd like to improve Zenith, please follow standard open-source workflow:
 
 1. **Fork** the repository.
 2. **Branch** (`git checkout -b feature/AmazingFeature`).
@@ -264,7 +264,7 @@ This project is licensed under the [MIT License](LICENSE).
 
 ## 👨‍💻 Author
 
-**Project Zenith**  
+**Zenith**  
 Created by **Raj Kumar Mehta**  
 *Computer Science, SRM Institute of Science and Technology*
 

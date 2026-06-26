@@ -1,8 +1,8 @@
-# Project Zenith Scalability Guidelines
+# Zenith Scalability Guidelines
 
 ## 1. Feature Modularity
 
-Project Zenith is designed as a platform where features can be plugged in or removed.
+Zenith is designed as a platform where features can be plugged in or removed.
 - **Loose Coupling**: Ensure that the removal of one module (e.g., `news`) does not break the `globe` or `satellites` modules.
 - **Event-Driven Communication**: When modules need to interact (e.g., a satellite is clicked, updating the info panel), use a global event bus or a shared Zustand store, rather than direct component references.
 

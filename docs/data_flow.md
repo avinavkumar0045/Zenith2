@@ -1,4 +1,4 @@
-# Project Zenith Data Flow Diagram
+# Zenith Data Flow Diagram
 
 ```mermaid
 sequenceDiagram

@@ -1,4 +1,4 @@
-# Project Zenith Coding Standards
+# Zenith Coding Standards
 
 ## 1. React & Next.js
 

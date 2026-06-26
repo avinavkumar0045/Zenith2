@@ -152,7 +152,7 @@ export default function LandingPage() {
 
         {/* FOOTER */}
         <footer className="py-10 text-center border-t border-white/10 text-gray-500 text-sm backdrop-blur-md bg-black/50">
-          <p>© {new Date().getFullYear()} Project Zenith. Engineered for deep space situational awareness.</p>
+          <p>© {new Date().getFullYear()} Zenith. Engineered for deep space situational awareness.</p>
         </footer>
       </div>
     </main>

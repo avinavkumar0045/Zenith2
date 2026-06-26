@@ -62,7 +62,7 @@ export default function DocsPage() {
         {/* Main Content */}
         <article className="flex-1 px-6 md:px-12 lg:px-24 py-12 max-w-4xl font-sans pb-40 bg-black/40 backdrop-blur-md rounded-2xl mx-4 md:mx-12 my-8 border border-white/10 shadow-2xl">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-            <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Project Zenith User Manual</h1>
+            <h1 className="text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">Zenith User Manual</h1>
             <p className="text-xl text-blue-300/80 font-light mb-16">The definitive guide to understanding and operating the Space Situational Awareness platform.</p>
 
             {/* 1. Intro */}
@@ -70,12 +70,12 @@ export default function DocsPage() {
               <h2 className="text-2xl font-bold text-white border-b border-white/10 pb-4 mb-6">1. Introduction</h2>
               <DocImage 
                 src="/docs/images/landing-page.png" 
-                alt="Project Zenith Landing Page"
-                desc="The Project Zenith landing page providing access to the Dashboard and Documentation." 
+                alt="Zenith Landing Page"
+                desc="The Zenith landing page providing access to the Dashboard and Documentation." 
               />
-              <h3 className="text-lg font-semibold text-white mt-8 mb-2">What is Project Zenith?</h3>
+              <h3 className="text-lg font-semibold text-white mt-8 mb-2">What is Zenith?</h3>
               <p className="mb-4 leading-relaxed text-gray-400">
-                Project Zenith is an advanced Space Situational Awareness (SSA) platform designed for real-time celestial and orbital tracking. 
+                Zenith is an advanced Space Situational Awareness (SSA) platform designed for real-time celestial and orbital tracking. 
                 Whether you are an amateur astronomer, an educator, or a space enthusiast, Zenith consolidates massive amounts of astronomical 
                 data—satellites, planets, constellations, and the ISS—into a single unified 3D platform.
               </p>
@@ -303,7 +303,7 @@ export default function DocsPage() {
             <section id="workflow" className="mb-20 scroll-mt-24">
               <h2 className="text-2xl font-bold text-white border-b border-white/10 pb-4 mb-6">9. Navigation Workflow</h2>
               <p className="mb-4 leading-relaxed text-gray-400">
-                To maximize your experience with Project Zenith, follow this simple operational flow:
+                To maximize your experience with Zenith, follow this simple operational flow:
               </p>
               <div className="flex flex-col items-center justify-center space-y-4 my-10 p-6 md:p-10 border border-white/10 rounded-2xl bg-white/5">
                 <div className="px-6 py-3 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 text-center w-full max-w-sm">1. Set your Location via Search</div>
@@ -340,7 +340,7 @@ export default function DocsPage() {
             <section id="roadmap" className="mb-20 scroll-mt-24">
               <h2 className="text-2xl font-bold text-white border-b border-white/10 pb-4 mb-6">11. Future Roadmap</h2>
               <p className="mb-4 leading-relaxed text-gray-400">
-                Project Zenith is continuously evolving. Here are the features currently prioritized on our engineering roadmap:
+                Zenith is continuously evolving. Here are the features currently prioritized on our engineering roadmap:
               </p>
               <ul className="list-disc pl-6 space-y-2 text-gray-400">
                 <li><strong className="text-white">AI Sky Recommendations:</strong> Natural language modeling to suggest personalized targets.</li>

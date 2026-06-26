@@ -19,14 +19,14 @@ export default function AboutPage() {
             About The Project
           </div>
           <h1 className="text-4xl md:text-6xl font-bold mb-12 bg-gradient-to-br from-white to-gray-400 bg-clip-text text-transparent">
-            Project Zenith
+            Zenith
           </h1>
 
           <div className="space-y-12">
             <section>
               <h2 className="text-2xl font-bold mb-4">Overview</h2>
               <p className="text-gray-400 leading-relaxed text-lg">
-                Project Zenith is an advanced Space Situational Awareness (SSA) and celestial intelligence platform. Designed to bridge the gap between complex astronomical computations and intuitive user interfaces, Zenith allows users to understand exactly what exists in the sky above them at any given moment.
+                Zenith is an advanced Space Situational Awareness (SSA) and celestial intelligence platform. Designed to bridge the gap between complex astronomical computations and intuitive user interfaces, Zenith allows users to understand exactly what exists in the sky above them at any given moment.
               </p>
             </section>
 

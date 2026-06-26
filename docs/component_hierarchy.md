@@ -1,4 +1,4 @@
-# Project Zenith Component Hierarchy
+# Zenith Component Hierarchy
 
 ```mermaid
 graph TD
