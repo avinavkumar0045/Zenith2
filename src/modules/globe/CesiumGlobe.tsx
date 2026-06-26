@@ -26,6 +26,9 @@ export default function CesiumGlobe() {
     // Set Cesium base URL
     (window as any).CESIUM_BASE_URL = '/cesium';
 
+    // Provide the active community token (from 1.142.0) since the default in 1.134.0 has expired
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiIxMDYxM2JlMS00NTIzLTQ0YWItYTg5My00NzRkMDgwNThiZDciLCJpZCI6MjU5LCJzdWIiOiJDZXNpdW1KUyIsImlzcyI6Imh0dHBzOi8vYXBpLmNlc2l1bS5jb20iLCJhdWQiOiIxLjE0MiBSZWxlYXNlIC0gRGVsZXRlIG9uIEF1Z3VzdCAxLCAyMDI2IiwiaWF0IjoxNzc5NjkwODE2fQ.Eq05fkRTh1lFGZUqr9vZZorz4HO_6rY_UmYi3fIHYaU';
+
     // Initialize the viewer
     const viewer = new Cesium.Viewer(cesiumContainer.current, {
       animation: false,
