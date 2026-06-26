@@ -52,6 +52,17 @@ class SatelliteServiceClass {
       }
     }, 10000);
   }
+
+  public propagateAllToTime(date: Date) {
+    const store = useSatelliteStore.getState();
+    const updated = store.activeSatellites.map(sat => OrbitService.propagateSatellite(sat, date));
+    store.setSatellites(updated);
+
+    if (store.selectedSatellite) {
+      const updatedSelected = OrbitService.propagateSatellite(store.selectedSatellite, date);
+      store.setSelectedSatellite(updatedSelected);
+    }
+  }
 }
 
 export const SatelliteService = new SatelliteServiceClass();

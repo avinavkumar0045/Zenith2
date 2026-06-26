@@ -23,13 +23,13 @@ class PlanetPositionServiceClass {
     this.calculateAll();
   }
 
-  public calculateAll() {
+  public calculateAll(date: Date = new Date()) {
     const { activeLocation } = useLocationStore.getState();
     if (!activeLocation) return;
 
     usePlanetStore.getState().setLoading(true);
     
-    const now = new Date();
+    const now = date;
     const newPlanets: Record<PlanetId, PlanetIntelligenceObject> = {} as Record<PlanetId, PlanetIntelligenceObject>;
 
     for (const p of this.planets) {

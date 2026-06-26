@@ -19,8 +19,7 @@ class MoonPositionServiceClass {
     this.calculateSubLunarPoint();
   }
 
-  private async calculateSubLunarPoint() {
-    const date = new Date();
+  public async calculateSubLunarPoint(date: Date = new Date()) {
     
     // We calculate horizontal coordinates from the intersection of Equator & Prime Meridian
     // This allows us to map topocentric altitude/azimuth to declination/Right Ascension

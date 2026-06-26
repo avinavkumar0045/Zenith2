@@ -15,7 +15,7 @@ class MoonServiceClass {
     }
   }
 
-  private updateMoonData() {
+  public updateMoonData(date: Date = new Date()) {
     const { activeLocation } = useLocationStore.getState();
     if (!activeLocation) {
       useMoonStore.getState().setMoonData(null);
@@ -25,7 +25,7 @@ class MoonServiceClass {
     useMoonStore.getState().setLoading(true);
     
     try {
-      const data = MoonCalculationService.calculateMoonData(activeLocation);
+      const data = MoonCalculationService.calculateMoonData(activeLocation, date);
       useMoonStore.getState().setMoonData(data);
       eventBus.emit('moonUpdated', data);
     } catch (error) {

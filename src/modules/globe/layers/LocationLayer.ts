@@ -41,10 +41,11 @@ export class LocationLayer extends BaseLayer {
 
         const entityOptions = MarkerService.createGenericMarker(markerOptions);
         if (entityOptions.point) {
-          entityOptions.point.outlineColor = Cesium.Color.fromCssColorString('rgba(34, 211, 238, 0.4)') as any;
-          entityOptions.point.outlineWidth = 4 as any;
+          entityOptions.point.outlineColor = Cesium.Color.fromCssColorString('rgba(34, 211, 238, 0.6)') as any;
+          entityOptions.point.outlineWidth = 3 as any;
           entityOptions.point.color = Cesium.Color.WHITE as any; // White core
-          entityOptions.point.pixelSize = 6 as any; // small sharp core
+          entityOptions.point.pixelSize = 4 as any; // sharper Zenith beacon core
+          entityOptions.point.disableDepthTestDistance = Number.POSITIVE_INFINITY as any;
         }
         
         const pointEntity = this.dataSource.entities.add(entityOptions);
@@ -76,6 +77,29 @@ export class LocationLayer extends BaseLayer {
           }
         });
         this.currentHaloId = haloEntity.id;
+
+        // Outer beacon ring — second concentric ripple
+        this.dataSource.entities.add({
+          id: `loc_beacon_${location.id}`,
+          position: Cesium.Cartesian3.fromDegrees(location.longitude, location.latitude),
+          ellipse: {
+            semiMajorAxis: new Cesium.CallbackProperty(() => {
+              return this.currentRadius * 1.8;
+            }, false),
+            semiMinorAxis: new Cesium.CallbackProperty(() => {
+              return Math.max(0.1, this.currentRadius * 1.8 - 1.0);
+            }, false),
+            material: new Cesium.ColorMaterialProperty(new Cesium.CallbackProperty(() => {
+              return Cesium.Color.fromCssColorString(`rgba(34, 211, 238, ${this.currentAlpha * 0.3})`);
+            }, false)),
+            outline: true,
+            outlineColor: new Cesium.CallbackProperty(() => {
+              return Cesium.Color.fromCssColorString(`rgba(34, 211, 238, ${this.currentAlpha * 1.5})`);
+            }, false),
+            outlineWidth: 1,
+            height: 0
+          }
+        });
         
         CameraService.focusLocation(location.longitude, location.latitude, 5000000.0);
       }
@@ -101,7 +125,7 @@ export class LocationLayer extends BaseLayer {
       this.currentRadius = 100000.0;
       this.currentAlpha = 0.1;
     } else {
-      const phase = Math.sin(Date.now() * 0.003);
+      const phase = Math.sin(Date.now() * 0.002);
       this.currentRadius = 100000.0 + phase * 35000.0;
       this.currentAlpha = 0.1 - phase * 0.04;
     }
@@ -112,11 +136,11 @@ export class LocationLayer extends BaseLayer {
       if (entity && entity.point) {
         if (prefersReducedMotion) {
           entity.point.outlineWidth = 3 as any;
-          entity.point.pixelSize = 6 as any;
+          entity.point.pixelSize = 4 as any;
         } else {
-          const osc = Math.sin(Date.now() * 0.005) * 3 + 6;
+          const osc = Math.sin(Date.now() * 0.004) * 2 + 4;
           entity.point.outlineWidth = osc as any;
-          entity.point.pixelSize = 6 as any;
+          entity.point.pixelSize = 4 as any;
         }
       }
     }
