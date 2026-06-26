@@ -8,12 +8,23 @@ import LocationCard from '@/modules/location/components/LocationCard';
 import LocationStatus from '@/modules/location/components/LocationStatus';
 import { useLocation } from '@/modules/location/hooks/useLocation';
 import { LocationService } from '@/modules/location/services/LocationService';
+import { CameraService } from '@/modules/globe/services/CameraService';
 import SatelliteDetails from '@/modules/satellites/components/SatelliteDetails';
 import OrbitPanel from '@/modules/orbits/components/OrbitPanel';
 import OrbitLegend from '@/modules/orbits/components/OrbitLegend';
 import OrbitTimeline from '@/modules/orbits/components/OrbitTimeline';
 import ZenithControlCenter from '@/components/ui/ZenithControlCenter';
 import { CommandIsland } from '@/components/ui/command-island/CommandIsland';
+import { MissionBrief } from '@/components/workspaces/mission-brief/MissionBrief';
+import { CelestialExplorer } from '@/components/workspaces/celestial-explorer/CelestialExplorer';
+import { TimeIntelligence } from '@/components/workspaces/time-intelligence/TimeIntelligence';
+import { Visualization } from '@/components/workspaces/visualization/Visualization';
+import { ZenithAI } from '@/components/ai/ZenithAI';
+import { EventBus } from '@/components/ai/orchestrator/EventBus';
+import { useWeatherStore } from '@/modules/weather/store/useWeatherStore';
+import { useSkyIntelligenceStore } from '@/modules/reports/store/useSkyIntelligenceStore';
+import { useTimeStore } from '@/components/workspaces/time-intelligence/types';
+import { CommandIslandAPI } from '@/components/ui/command-island/CommandIslandState';
 import { PassPredictionService } from '@/modules/pass-predictions/services/PassPredictionService';
 import { CelestialReport } from '@/modules/reports/components/CelestialReport';
 import { SkyIntelligenceService } from '@/modules/reports/services/SkyIntelligenceService';
@@ -54,6 +65,63 @@ function AppOverlay() {
   // Design & workspace states
   const activeLocation = useLocationStore((state) => state.activeLocation);
   const [activeWorkspace, setActiveWorkspace] = useState("Mission");
+
+  // AI Event Bus Publishers and store subscriptions
+  const weather = useWeatherStore((state) => state.weather);
+  const report = useSkyIntelligenceStore((state) => state.report);
+  const selectedTime = useTimeStore((state) => state.selectedTime);
+
+  useEffect(() => {
+    if (weather) {
+      EventBus.emit('WeatherChanged', weather);
+    }
+  }, [weather]);
+
+  useEffect(() => {
+    if (report) {
+      EventBus.emit('SkyScoreChanged', report.observationScore);
+      if (report.issSummary?.isCurrentlyVisible) {
+        EventBus.emit('ISSPassStarted', report.issSummary);
+      }
+    }
+  }, [report]);
+
+  useEffect(() => {
+    EventBus.emit('TimelineMoved', selectedTime);
+  }, [selectedTime]);
+
+  // AI Proactive Suggestion Listener mapping to Command Island
+  useEffect(() => {
+    const unsubWeather = EventBus.on('WeatherChanged', (w: any) => {
+      if (w && w.cloudCover < 30) {
+        CommandIslandAPI.showNotification('AI Suggestion: Clear skies tonight. Plan session?', 1);
+      }
+    });
+
+    const unsubScore = EventBus.on('SkyScoreChanged', (score: number) => {
+      if (score >= 90) {
+        CommandIslandAPI.showNotification('AI Suggestion: Excellent stargazing score. Start session?', 1);
+      }
+    });
+
+    const unsubISS = EventBus.on('ISSPassStarted', (iss: any) => {
+      CommandIslandAPI.showNotification('AI Suggestion: ISS Orbit pass arriving. Track ISS?', 1);
+    });
+
+    return () => {
+      unsubWeather();
+      unsubScore();
+      unsubISS();
+    };
+  }, []);
+
+  const handleRecenter = () => {
+    if (activeLocation) {
+      CameraService.focusLocation(activeLocation.longitude, activeLocation.latitude);
+    } else {
+      CameraService.resetView();
+    }
+  };
 
   useEffect(() => {
     WeatherService.initialize();
@@ -203,6 +271,7 @@ function AppOverlay() {
                 <button
                   key={ws.id}
                   onClick={() => setActiveWorkspace(ws.id)}
+                  suppressHydrationWarning
                   className={clsx(
                     "relative flex items-center justify-center gap-1.5 px-3 py-1.5 sm:px-4 rounded-full text-xs font-sans tracking-widest uppercase transition-colors duration-[250ms] flex-1 cursor-pointer hover:scale-105 active:scale-95 group",
                     isActive ? "text-white font-bold" : "text-slate-300 hover:text-white"
@@ -227,8 +296,42 @@ function AppOverlay() {
           </div>
         </div>
 
-        {/* Context Drawer Area (Closed by default) */}
-        <div id="context-drawer-placeholder" className="hidden" aria-hidden="true" />
+        {/* Context Drawer Area */}
+        <MissionBrief 
+          isOpen={activeWorkspace === 'Mission'} 
+          onClose={() => setActiveWorkspace('')} 
+        />
+        <CelestialExplorer 
+          isOpen={activeWorkspace === 'Objects'} 
+          onClose={() => setActiveWorkspace('')} 
+        />
+        <TimeIntelligence 
+          isOpen={activeWorkspace === 'Timeline'} 
+          onClose={() => setActiveWorkspace('')} 
+        />
+        <Visualization 
+          isOpen={activeWorkspace === 'Layers'} 
+          onClose={() => setActiveWorkspace('')} 
+        />
+        <ZenithAI 
+          isOpen={activeWorkspace === 'AI'} 
+          onClose={() => setActiveWorkspace('')} 
+        />
+
+        {/* Recenter View Control Button */}
+        <div className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 z-20 pointer-events-auto flex flex-col gap-3">
+          <button
+            onClick={handleRecenter}
+            suppressHydrationWarning
+            className="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-slate-950/80 hover:bg-slate-900 border border-white/10 hover:border-cyan-500/30 text-slate-400 hover:text-cyan-400 transition-all duration-[300ms] shadow-[0_4px_16px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.15)] hover:shadow-[0_0_15px_rgba(34,211,238,0.25)] active:scale-95 group relative cursor-pointer"
+          >
+            {/* Tooltip */}
+            <span className="opacity-0 group-hover:opacity-100 pointer-events-none absolute right-12 sm:right-14 bg-slate-950/90 border border-slate-800 text-[9px] font-mono tracking-widest uppercase text-slate-300 px-2.5 py-1 rounded-md transition-opacity duration-200 whitespace-nowrap shadow-md">
+              Recenter Globe
+            </span>
+            <Compass className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-[400ms] group-hover:rotate-45" />
+          </button>
+        </div>
       </div>
 
       {/* Hidden components archive (Preserves 100% of features and compilation states for future phases) */}
