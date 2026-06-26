@@ -87,7 +87,7 @@ export default function HeroSection() {
           className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight text-white mb-6 drop-shadow-lg"
           style={{ textShadow: '0 4px 30px rgba(0,0,0,0.5)' }}
         >
-          PROJECT ZENITH
+          ZENITH
         </motion.h1>
 
         <motion.p 
