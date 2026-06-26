@@ -61,6 +61,13 @@ export default function CesiumGlobe() {
     // Register with GlobeService
     GlobeService.initialize(viewer);
 
+    // Explicitly guarantee touch inputs are enabled for mobile
+    viewer.scene.screenSpaceCameraController.enableInputs = true;
+    viewer.scene.screenSpaceCameraController.enableZoom = true;
+    viewer.scene.screenSpaceCameraController.enableRotate = true;
+    viewer.scene.screenSpaceCameraController.enableTilt = true;
+    viewer.scene.screenSpaceCameraController.enableTranslate = true;
+
     // Initialize Default Layers
     const dayNightLayer = new DayNightLayer();
     const satelliteLayer = new SatelliteLayer();
