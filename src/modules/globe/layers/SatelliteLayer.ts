@@ -61,7 +61,7 @@ export class SatelliteLayer extends BaseLayer {
 
     // Add or update entities
     satellites.forEach(sat => {
-      let entity = this.dataSource.entities.getById(sat.id);
+      const entity = this.dataSource.entities.getById(sat.id);
       const position = Cesium.Cartesian3.fromDegrees(sat.longitude, sat.latitude, sat.altitude);
 
       if (!entity) {

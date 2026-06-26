@@ -21,26 +21,16 @@ export function CelestialReport() {
   const activeLocation = useLocationStore(state => state.activeLocation);
   const { weather: _weather } = useWeatherStore();
 
-  const [report, setReport] = useState(_report);
-  const [correlationReport, setCorrelationReport] = useState(_correlationReport);
-  const [ssaReport, setSsaReport] = useState(_ssaReport);
-  const [topEvent, setTopEvent] = useState(_topEvent);
-  const [importantEvents, setImportantEvents] = useState(_importantEvents);
-  const [bestOpportunity, setBestOpportunity] = useState(_bestOpportunity);
-  const [forecastQuality, setForecastQuality] = useState(_forecastQuality);
-  const [forecastSummary, setForecastSummary] = useState(_forecastSummary);
-  const [weather, setWeather] = useState(_weather);
+  const report = _report;
+  const correlationReport = _correlationReport;
+  const ssaReport = _ssaReport;
+  const topEvent = _topEvent;
+  const importantEvents = _importantEvents;
+  const bestOpportunity = _bestOpportunity;
+  const forecastQuality = _forecastQuality;
+  const forecastSummary = _forecastSummary;
+  const weather = _weather;
   const [isMobileExpanded, setIsMobileExpanded] = useState(false);
-
-  useEffect(() => { if (_report) setReport(_report); }, [_report]);
-  useEffect(() => { if (_correlationReport) setCorrelationReport(_correlationReport); }, [_correlationReport]);
-  useEffect(() => { if (_ssaReport) setSsaReport(_ssaReport); }, [_ssaReport]);
-  useEffect(() => { if (_topEvent !== undefined) setTopEvent(_topEvent); }, [_topEvent]);
-  useEffect(() => { if (_importantEvents) setImportantEvents(_importantEvents); }, [_importantEvents]);
-  useEffect(() => { if (_bestOpportunity !== undefined) setBestOpportunity(_bestOpportunity); }, [_bestOpportunity]);
-  useEffect(() => { if (_forecastQuality) setForecastQuality(_forecastQuality); }, [_forecastQuality]);
-  useEffect(() => { if (_forecastSummary) setForecastSummary(_forecastSummary); }, [_forecastSummary]);
-  useEffect(() => { if (_weather) setWeather(_weather); }, [_weather]);
 
   const [isExpanded, setIsExpanded] = useState(true);
   const [width, setWidth] = useState(280);
@@ -58,7 +48,7 @@ export function CelestialReport() {
   useEffect(() => {
     const saved = localStorage.getItem('zenith-report-width');
     if (saved) {
-      setWidth(Number(saved));
+      setTimeout(() => setWidth(Number(saved)), 0);
     }
   }, []);
 

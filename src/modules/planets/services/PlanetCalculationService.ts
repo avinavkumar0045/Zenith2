@@ -28,11 +28,11 @@ export class PlanetCalculationServiceClass {
   }
 
   private solveKepler(M: number, e: number): number {
-    let E = M + e * this.rtd(Math.sin(this.dtr(M))) * (1.0 + e * Math.cos(this.dtr(M)));
+    const E = M + e * this.rtd(Math.sin(this.dtr(M))) * (1.0 + e * Math.cos(this.dtr(M)));
     let E1 = E;
     for (let i = 0; i < 5; i++) {
-      let E0 = E1;
-      let E0_rad = this.dtr(E0);
+      const E0 = E1;
+      const E0_rad = this.dtr(E0);
       E1 = E0 - (E0 - e * this.rtd(Math.sin(E0_rad)) - M) / (1 - e * Math.cos(E0_rad));
     }
     return E1;

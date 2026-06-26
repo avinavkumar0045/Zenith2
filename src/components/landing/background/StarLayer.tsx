@@ -36,13 +36,11 @@ export default function StarLayer() {
   const xForeground = useTransform(x, [-1, 1], [-10, 10]);
   const yForeground = useTransform(y, [-1, 1], [-10, 10]);
 
-  useEffect(() => {
-    setLayers([
-      generateStars(500, 0.8, 0),    // Background (dense, tiny)
-      generateStars(200, 1.5, 100),  // Medium (twinkle)
-      generateStars(50, 2.5, 200),   // Foreground (sparse, bright)
-    ]);
-  }, []);
+  const [layers] = useState<string[]>(() => [
+    generateStars(500, 0.8, 0),    // Background (dense, tiny)
+    generateStars(200, 1.5, 100),  // Medium (twinkle)
+    generateStars(50, 2.5, 200),   // Foreground (sparse, bright)
+  ]);
 
   if (layers.length === 0) return null;
 

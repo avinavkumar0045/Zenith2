@@ -48,7 +48,7 @@ export class ISSLayer extends BaseLayer {
   private syncISS(iss: any) {
     if (!iss) return;
 
-    let entity = this.dataSource.entities.getById(iss.id);
+    const entity = this.dataSource.entities.getById(iss.id);
     const position = Cesium.Cartesian3.fromDegrees(iss.longitude, iss.latitude, iss.altitude);
 
     if (!entity) {

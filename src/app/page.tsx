@@ -39,7 +39,7 @@ export default function LandingPage() {
             </h1>
             
             <p className="text-lg md:text-2xl text-gray-400 mb-12 max-w-2xl font-light tracking-[0.3em] uppercase">
-              Discover • Track • Predict
+              Observe • Understand • Anticipate Space
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 items-center w-full sm:w-auto">

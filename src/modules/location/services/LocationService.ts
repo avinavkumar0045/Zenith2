@@ -61,7 +61,7 @@ class LocationServiceClass {
     const dayNightData = DayNightService.getDayNightData(data.latitude, data.longitude);
     
     // Attempt to get timezone
-    let tz = Intl.DateTimeFormat().resolvedOptions().timeZone; // fallback to local
+    const tz = Intl.DateTimeFormat().resolvedOptions().timeZone; // fallback to local
     // In a real prod app, use a timezone API or library like geo-tz. We fallback to local tz string for now.
     
     const localTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });

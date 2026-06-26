@@ -44,7 +44,7 @@ export class ObservationWindowEngineClass {
     // Time it takes to go from 10 deg to peak
     const hoursFrom10ToPeak = (peakAltitude - 10) / rateDegPerHour;
     
-    let visibilityStart = peakTime - hoursFrom10ToPeak * 3600000;
+    const visibilityStart = peakTime - hoursFrom10ToPeak * 3600000;
     let visibilityEnd = peakTime + hoursFrom10ToPeak * 3600000;
 
     // Sanity constraints
