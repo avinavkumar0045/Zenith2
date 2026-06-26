@@ -7,7 +7,7 @@ export interface GeocodingResult {
 }
 
 export class NominatimProvider {
-  private readonly baseUrl = 'https://nominatim.openstreetmap.org';
+  private readonly baseUrl = '/api/geocoding';
 
   public async search(query: string): Promise<GeocodingResult[]> {
     try {
