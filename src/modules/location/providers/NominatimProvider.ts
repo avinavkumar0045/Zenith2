@@ -15,7 +15,7 @@ export class NominatimProvider {
         headers: {
           'Accept-Language': 'en',
           // Nominatim requires a User-Agent or it might block requests.
-          'User-Agent': 'Project-Zenith/1.0'
+          'User-Agent': 'Zenith/1.0'
         }
       });
       if (!response.ok) throw new Error('Network response was not ok');
@@ -39,7 +39,7 @@ export class NominatimProvider {
       const response = await fetch(`${this.baseUrl}/reverse?lat=${latitude}&lon=${longitude}&format=json&addressdetails=1`, {
         headers: {
           'Accept-Language': 'en',
-          'User-Agent': 'Project-Zenith/1.0'
+          'User-Agent': 'Zenith/1.0'
         }
       });
       if (!response.ok) throw new Error('Network response was not ok');
