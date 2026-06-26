@@ -1,7 +1,7 @@
 "use client";
 
 import LandingNav from '@/components/ui/LandingNav';
-import { CosmicParallaxBg } from '@/components/ui/parallax-cosmic-background';
+import { StaticCosmicBackground } from '@/components/ui/StaticCosmicBackground';
 import { motion } from 'framer-motion';
 
 const chapters = [
@@ -43,12 +43,7 @@ export default function DocsPage() {
       <LandingNav />
       
       {/* Cosmic Parallax Background */}
-      <CosmicParallaxBg 
-        head="" 
-        text="" 
-        loop={true}
-        className="fixed inset-0 z-0 pointer-events-none"
-      />
+      <StaticCosmicBackground />
 
       <div className="relative z-10 pt-24 max-w-screen-2xl mx-auto flex flex-col md:flex-row">
         

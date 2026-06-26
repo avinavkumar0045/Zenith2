@@ -8,6 +8,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://project-zenith.vercel.app"),
   title: "Project Zenith - The Celestial Intelligence Platform",
   description: "Discover What Exists Above Any Point On Earth. Real-time satellite tracking, celestial positioning, and space weather intelligence.",
   keywords: ["space", "astronomy", "satellites", "ISS", "celestial", "situational awareness", "tracking"],
@@ -43,12 +44,15 @@ export const metadata: Metadata = {
     follow: true,
   },
   manifest: "/site.webmanifest",
-  themeColor: "#000000",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
     title: "Zenith",
   },
+};
+
+export const viewport = {
+  themeColor: "#000000",
 };
 
 export default function RootLayout({

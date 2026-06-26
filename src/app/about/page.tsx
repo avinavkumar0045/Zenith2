@@ -1,19 +1,14 @@
 "use client";
 
 import LandingNav from '@/components/ui/LandingNav';
-import { CosmicParallaxBg } from '@/components/ui/parallax-cosmic-background';
+import { StaticCosmicBackground } from '@/components/ui/StaticCosmicBackground';
 import { motion } from 'framer-motion';
 
 export default function AboutPage() {
   return (
     <main className="relative min-h-screen bg-transparent text-white">
       <LandingNav />
-      <CosmicParallaxBg 
-        head="" 
-        text="" 
-        loop={true}
-        className="fixed inset-0 z-0 pointer-events-none"
-      />
+      <StaticCosmicBackground />
       
       <div className="relative z-10 pt-32 pb-20 px-6 max-w-4xl mx-auto">
         <motion.div 

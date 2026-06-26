@@ -5,20 +5,15 @@ import Link from 'next/link';
 import LandingNav from '@/components/ui/LandingNav';
 import { ChevronRight, Globe2, Sparkles, Navigation, Radar, Compass, CloudLightning, CircleDot, Radio } from 'lucide-react';
 import clsx from 'clsx';
-import { CosmicParallaxBg } from '@/components/ui/parallax-cosmic-background';
+import { StaticCosmicBackground } from '@/components/ui/StaticCosmicBackground';
 
 export default function LandingPage() {
   return (
     <main className="relative min-h-screen bg-transparent overflow-x-hidden text-white selection:bg-blue-500/30">
       <LandingNav />
       
-      {/* Test Cosmic Parallax Background */}
-      <CosmicParallaxBg 
-        head="" 
-        text="" 
-        loop={true}
-        className="fixed inset-0 z-0 pointer-events-none"
-      />
+      {/* Static CSS Space Background */}
+      <StaticCosmicBackground />
 
       <div className="relative z-10">
         {/* HERO SECTION */}
