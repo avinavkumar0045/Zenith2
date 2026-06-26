@@ -25,11 +25,11 @@
 
 | Landing Page | Dashboard |
 |:---:|:---:|
-| ![Landing Page Preview](/docs/images/landing-page.png) | ![Dashboard Preview](/docs/images/dashboard.png) |
+| ![Landing Page Preview](public/docs/images/landing-page.png) | ![Dashboard Preview](public/docs/images/dashboard.png) |
 
 | Documentation | Mobile View |
 |:---:|:---:|
-| ![Documentation Portal](/docs/images/documentation.png) | ![Mobile View](/docs/images/mobile-view.png) |
+| ![Documentation Portal](public/docs/images/documentation.png) | ![Mobile View](public/docs/images/mobile-view.png) |
 
 </details>
 
