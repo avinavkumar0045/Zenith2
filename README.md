@@ -1,6 +1,6 @@
 <div align="center">
   <h1>PROJECT ZENITH</h1>
-  <p><strong>"Discover. Understand. Anticipate Space."</strong></p>
+  <p><strong>"Observe. Understand. Anticipate Space."</strong></p>
   <p>Project Zenith is an advanced Space Situational Awareness platform built with Next.js and CesiumJS that enables users to explore satellites, planets, celestial bodies, weather conditions, orbital predictions, and observation opportunities from any location on Earth.</p>
 
   <!-- Badges -->
