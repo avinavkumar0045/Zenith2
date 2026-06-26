@@ -1,5 +1,6 @@
 import { CameraService } from '@/modules/globe/services/CameraService';
 import { ExplorerAPI } from '../api/ExplorerAPI';
+import { EventBus } from '../orchestrator/EventBus';
 
 export class FocusTool {
   public static execute(payload: { targetId?: string; targetName?: string; coords?: { latitude: number; longitude: number; altitude?: number } }): string {
@@ -24,6 +25,7 @@ export class FocusTool {
         }
         
         ExplorerAPI.setSelectedObject(obj.id);
+        EventBus.emit('focusTarget', { targetId: obj.id, targetName: obj.name, coords: obj.coordinates });
         return `Camera focused and locked onto: ${obj.name}`;
       }
     }
@@ -43,6 +45,7 @@ export class FocusTool {
           }, 100);
         }
         ExplorerAPI.setSelectedObject(obj.id);
+        EventBus.emit('focusTarget', { targetId: obj.id, targetName: obj.name, coords: obj.coordinates });
         return `Camera focused and locked onto: ${obj.name}`;
       }
     }
@@ -50,12 +53,14 @@ export class FocusTool {
     if (payload.coords) {
       CameraService.stopTracking();
       CameraService.focusLocation(payload.coords.longitude, payload.coords.latitude, payload.coords.altitude || 2000000.0);
+      EventBus.emit('focusTarget', { coords: payload.coords });
       return `Focused camera on coordinates: Lat ${payload.coords.latitude.toFixed(4)}, Lon ${payload.coords.longitude.toFixed(4)}`;
     }
 
     // Default reset
     CameraService.resetView();
     ExplorerAPI.setSelectedObject(null);
+    EventBus.emit('focusTarget', null);
     return `Reset camera to global overview.`;
   }
 }
